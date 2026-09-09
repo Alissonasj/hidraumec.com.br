@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -126,5 +126,147 @@
   }
   html {
     @apply font-mono;
+  }
+}
+
+@layer components {
+  .product-visual {
+    position: relative;
+    width: min(100%, 210px);
+    height: 145px;
+    filter: drop-shadow(0 18px 11px rgb(15 23 42 / 0.16));
+  }
+
+  .machine-shadow {
+    position: absolute;
+    right: 8%;
+    bottom: 7%;
+    width: 82%;
+    height: 12%;
+    border-radius: 50%;
+    background: rgb(15 23 42 / 0.18);
+    filter: blur(5px);
+  }
+
+  .machine-body,
+  .machine-detail,
+  .machine-hub {
+    position: absolute;
+  }
+
+  .product-visual-pump .machine-body {
+    left: 20%;
+    top: 29%;
+    width: 55%;
+    height: 43%;
+    border-radius: 24% 14% 16% 20%;
+    background: linear-gradient(145deg, #e8ad1a, #a96305);
+    transform: skewY(-5deg);
+  }
+
+  .product-visual-pump .machine-detail {
+    left: 15%;
+    top: 36%;
+    width: 19%;
+    height: 29%;
+    border-radius: 50%;
+    border: 8px solid #9a6008;
+    background: #e9b01d;
+  }
+
+  .product-visual-pump .machine-hub {
+    right: 13%;
+    top: 39%;
+    width: 25%;
+    height: 25%;
+    border-radius: 50%;
+    border: 10px solid #5c4c2d;
+    background: #d9dce0;
+    box-shadow: inset 0 0 0 4px #9aa0a6;
+  }
+
+  .product-visual-motor .machine-body {
+    left: 15%;
+    top: 30%;
+    width: 70%;
+    height: 40%;
+    border-radius: 18% 35% 25% 20%;
+    background: linear-gradient(145deg, #77828a, #252c31);
+    box-shadow:
+      inset 20px 0 #4d575d,
+      inset -20px 0 #9ca4a7;
+  }
+
+  .product-visual-motor .machine-detail {
+    left: 27%;
+    top: 25%;
+    width: 42%;
+    height: 12%;
+    border-radius: 50%;
+    background: #c2c7c9;
+  }
+
+  .product-visual-motor .machine-hub {
+    right: 8%;
+    top: 35%;
+    width: 28%;
+    height: 30%;
+    border-radius: 50%;
+    border: 9px solid #4b555b;
+    background: #dce0e1;
+  }
+
+  .product-visual-valve .machine-body {
+    left: 12%;
+    top: 34%;
+    width: 76%;
+    height: 32%;
+    border-radius: 8px;
+    background: linear-gradient(#adb6b9, #5d696d);
+    box-shadow:
+      inset 0 7px #d9dede,
+      inset 0 -7px #384347;
+  }
+
+  .product-visual-valve .machine-detail {
+    left: 9%;
+    top: 23%;
+    width: 15%;
+    height: 22%;
+    border-radius: 50%;
+    background: #b80f1b;
+    box-shadow:
+      45px 0 #c71824,
+      90px 0 #b80f1b,
+      135px 0 #c71824;
+  }
+
+  .product-visual-valve .machine-hub {
+    left: 18%;
+    bottom: 21%;
+    width: 11%;
+    height: 20%;
+    border-radius: 50%;
+    background: #bd1721;
+    box-shadow:
+      55px 0 #bd1721,
+      110px 0 #bd1721,
+      165px 0 #bd1721;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 49;
+  }
+
+  .desktop-top-nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 49;
   }
 }
