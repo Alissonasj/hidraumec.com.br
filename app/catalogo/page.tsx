@@ -8,7 +8,6 @@ import {
   CardFooter,
   CardHeader
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -18,6 +17,8 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet';
+import { brands, categories } from '@/lib/db';
+import { Product } from '@/lib/types';
 import {
   ArrowRightIcon,
   BookOpenTextIcon,
@@ -35,115 +36,8 @@ import {
   XIcon
 } from '@phosphor-icons/react';
 import Link from 'next/link';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-
-type Product = {
-  name: string;
-  brand: string;
-  reference: string;
-  machine: string;
-  category: string;
-  stock: 'Em estoque' | 'Estoque baixo';
-  visual: 'pump' | 'motor' | 'valve';
-};
-
-const products: Product[] = [
-  {
-    name: 'Bomba Hidráulica Principal Rexroth A8VO107',
-    brand: 'Caterpillar',
-    reference: '244-6352',
-    machine: 'Escavadeira CAT 320D / 320D L',
-    category: 'Bombas Hidráulicas',
-    stock: 'Em estoque',
-    visual: 'pump'
-  },
-  {
-    name: 'Motor de Giro Completo com Redutor',
-    brand: 'Volvo',
-    reference: '14524956',
-    machine: 'Escavadeira Volvo EC210B',
-    category: 'Motores Hidráulicos',
-    stock: 'Estoque baixo',
-    visual: 'motor'
-  },
-  {
-    name: 'Válvula de Controle Principal (Bloco Múltiplo)',
-    brand: 'Komatsu',
-    reference: '723-40-70100',
-    machine: 'Escavadeira Komatsu PC200-8',
-    category: 'Válvulas Direcionais',
-    stock: 'Em estoque',
-    visual: 'valve'
-  },
-  {
-    name: 'Kit de Reparo para Bomba de Pistões',
-    brand: 'Rexroth',
-    reference: 'R902148799',
-    machine: 'Máquinas industriais',
-    category: 'Reparos e Vedações',
-    stock: 'Em estoque',
-    visual: 'pump'
-  },
-  {
-    name: 'Motor Hidráulico de Tração',
-    brand: 'JCB',
-    reference: '20/925353',
-    machine: 'Retroescavadeira 3CX',
-    category: 'Motores Hidráulicos',
-    stock: 'Estoque baixo',
-    visual: 'motor'
-  },
-  {
-    name: 'Bloco de Válvulas de Comando',
-    brand: 'Caterpillar',
-    reference: '386-8824',
-    machine: 'Escavadeira CAT 336D',
-    category: 'Válvulas Direcionais',
-    stock: 'Em estoque',
-    visual: 'valve'
-  }
-];
-
-const categories = [
-  'Bombas Hidráulicas',
-  'Motores Hidráulicos',
-  'Cilindros',
-  'Válvulas Direcionais',
-  'Reparos e Vedações'
-];
-const brands = ['Caterpillar', 'Volvo', 'Komatsu', 'JCB', 'Rexroth'];
-
-function FilterSection({
-  title,
-  options,
-  selected,
-  onToggle
-}: {
-  title: string;
-  options: string[];
-  selected: string[];
-  onToggle: (option: string) => void;
-}) {
-  return (
-    <fieldset className='space-y-3 border-0 p-0'>
-      <legend className='mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-700'>
-        {title}
-      </legend>
-      {options.map((option) => (
-        <label
-          key={option}
-          className='flex cursor-pointer items-center gap-3 text-sm text-slate-600 transition-colors hover:text-red-700'
-        >
-          <Checkbox
-            checked={selected.includes(option)}
-            onCheckedChange={() => onToggle(option)}
-          />
-          <span>{option}</span>
-        </label>
-      ))}
-    </fieldset>
-  );
-}
+import { ChangeEvent, SubmitEvent, useEffect, useState } from 'react';
+import { FilterSection } from './components/filter-section';
 
 function ProductVisual({
   type,
@@ -228,15 +122,45 @@ function Filters({
 export default function CatalogoPage() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
-  const [previewQuery, setPreviewQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [productsData, setProductsData] = useState<Product[]>([]);
+  const [previewProductsData, setPreviewProductsData] = useState<Product[]>([]);
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => setPreviewQuery(query), 300);
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        setProductsData(data.products);
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
+
+  function handleOnChangeInputSearch(
+    event: ChangeEvent<HTMLInputElement, HTMLInputElement>
+  ) {
+    setQuery(event.target.value);
+    const timeout = window.setTimeout(
+      () => searchProducts(event.target.value),
+      400
+    );
     return () => window.clearTimeout(timeout);
-  }, [query]);
+
+    async function searchProducts(query: string) {
+      const response = await fetch(`/api/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query })
+      });
+      const data = await response.json();
+      setPreviewProductsData(data.result);
+    }
+  }
 
   const toggle = (
     value: string,
@@ -252,39 +176,21 @@ export default function CatalogoPage() {
     setSelectedCategories([]);
     setSelectedBrands([]);
   };
+  //   if (!previewQuery.trim()) return [];
 
-  const visibleProducts = useMemo(() => {
-    const filtered = products.filter((product) => {
-      const matchesQuery =
-        `${product.name} ${product.brand} ${product.reference}`
-          .toLowerCase()
-          .includes(submittedQuery.toLowerCase());
-      const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(product.category);
-      const matchesBrand =
-        selectedBrands.length === 0 || selectedBrands.includes(product.brand);
-      return matchesQuery && matchesCategory && matchesBrand;
-    });
-    return filtered;
-  }, [submittedQuery, selectedCategories, selectedBrands]);
+  //   return products
+  //     .filter((product) =>
+  //       `${product.name} ${product.brand} ${product.reference}`
+  //         .toLowerCase()
+  //         .includes(previewQuery.toLowerCase())
+  //     )
+  //     .slice(0, 5);
+  // }, [previewQuery]);
 
-  const previewProducts = useMemo(() => {
-    if (!previewQuery.trim()) return [];
-
-    return products
-      .filter((product) =>
-        `${product.name} ${product.brand} ${product.reference}`
-          .toLowerCase()
-          .includes(previewQuery.toLowerCase())
-      )
-      .slice(0, 5);
-  }, [previewQuery]);
-
-  const submitSearch = (event?: FormEvent<HTMLFormElement>) => {
-    event?.preventDefault();
+  function submitSearch(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
     setSubmittedQuery(query.trim());
-  };
+  }
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] text-slate-900'>
@@ -310,7 +216,7 @@ export default function CatalogoPage() {
               <MagnifyingGlassIcon className='ml-4 mt-3.5 size-4 shrink-0 text-slate-500' />
               <Input
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={handleOnChangeInputSearch}
                 placeholder='Buscar peças...'
                 className='h-11 rounded-none border-0 bg-transparent pl-3'
                 aria-label='Buscar peças'
@@ -324,9 +230,9 @@ export default function CatalogoPage() {
             </div>
             {query.trim() && query.trim() !== submittedQuery && (
               <div className='absolute left-0 right-0 top-full z-20 border border-t-0 border-slate-200 bg-white shadow-lg'>
-                {previewProducts.length > 0 ? (
+                {previewProductsData.length > 0 ? (
                   <ul className='divide-y divide-slate-100'>
-                    {previewProducts.map((product) => (
+                    {previewProductsData.map((product) => (
                       <li key={product.reference}>
                         <button
                           type='button'
@@ -502,10 +408,11 @@ export default function CatalogoPage() {
                     Catálogo de Peças
                   </h1>
                   <p className='text-xs text-slate-500'>
-                    {visibleProducts.length} itens encontrados
+                    {productsData.length} itens encontrados
                   </p>
                 </div>
               </div>
+              {/* Layout Grid/List */}
               <div className='flex items-center gap-1 self-end border border-slate-200 p-1'>
                 <Button
                   type='button'
@@ -559,7 +466,7 @@ export default function CatalogoPage() {
                   : 'grid gap-5'
               }
             >
-              {visibleProducts.map((product) => (
+              {productsData.map((product) => (
                 <Card
                   key={product.reference}
                   className={`bg-white transition-shadow hover:shadow-lg ${viewMode === 'list' ? 'sm:flex sm:flex-row' : ''}`}
@@ -600,11 +507,12 @@ export default function CatalogoPage() {
                 </Card>
               ))}
             </div>
-            {visibleProducts.length === 0 && (
+            {productsData.length === 0 && (
               <div className='border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500'>
                 Nenhuma peça encontrada para os filtros selecionados.
               </div>
             )}
+            {/* Paginação */}
             <div className='mt-10 flex items-center justify-center gap-2 border-t border-slate-200 pt-5'>
               <Button
                 variant='outline'
@@ -668,24 +576,24 @@ export default function CatalogoPage() {
           <div>
             <h2 className='mb-4 text-lg font-bold text-white'>Links Rápidos</h2>
             <div className='space-y-3 text-sm'>
-              <a
+              <Link
                 className='block hover:text-white'
                 href='#catalogo'
               >
                 Peças Originais
-              </a>
-              <a
+              </Link>
+              <Link
                 className='block hover:text-white'
                 href='#servicos'
               >
                 Manutenção Preventiva
-              </a>
-              <a
+              </Link>
+              <Link
                 className='block hover:text-white'
                 href='#sobre'
               >
                 Certificações
-              </a>
+              </Link>
             </div>
           </div>
           <div>
@@ -713,8 +621,8 @@ export default function CatalogoPage() {
           <div className='mx-auto flex max-w-[1440px] justify-between'>
             <span>© 2024 Hidraumec. Todos os direitos reservados.</span>
             <span className='hidden gap-5 sm:flex'>
-              <a href='#privacidade'>Privacidade</a>
-              <a href='#termos'>Termos</a>
+              <Link href='#privacidade'>Privacidade</Link>
+              <Link href='#termos'>Termos</Link>
             </span>
           </div>
         </div>
