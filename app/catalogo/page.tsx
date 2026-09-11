@@ -17,6 +17,7 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet';
+import { useProducts } from '@/hooks/useProducts';
 import { brands, categories } from '@/lib/db';
 import { Product } from '@/lib/types';
 import {
@@ -36,7 +37,7 @@ import {
   XIcon
 } from '@phosphor-icons/react';
 import Link from 'next/link';
-import { ChangeEvent, SubmitEvent, useEffect, useState } from 'react';
+import { ChangeEvent, SubmitEvent, useState } from 'react';
 import { FilterSection } from './components/filter-section';
 
 function ProductVisual({
@@ -125,19 +126,8 @@ export default function CatalogoPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [productsData, setProductsData] = useState<Product[]>([]);
   const [previewProductsData, setPreviewProductsData] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        setProductsData(data.products);
-      })
-      .catch((error) => {
-        console.error('Error fetching products:', error);
-      });
-  }, []);
+  const { productsData } = useProducts();
 
   function handleOnChangeInputSearch(
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
@@ -176,16 +166,6 @@ export default function CatalogoPage() {
     setSelectedCategories([]);
     setSelectedBrands([]);
   };
-  //   if (!previewQuery.trim()) return [];
-
-  //   return products
-  //     .filter((product) =>
-  //       `${product.name} ${product.brand} ${product.reference}`
-  //         .toLowerCase()
-  //         .includes(previewQuery.toLowerCase())
-  //     )
-  //     .slice(0, 5);
-  // }, [previewQuery]);
 
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
