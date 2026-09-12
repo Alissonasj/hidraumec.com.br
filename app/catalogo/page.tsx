@@ -20,6 +20,7 @@ import {
 import { useProducts } from '@/hooks/useProducts';
 import { brands, categories } from '@/lib/db';
 import { Product } from '@/lib/types';
+import { searchProducts } from '@/services/products';
 import {
   ArrowRightIcon,
   BookOpenTextIcon,
@@ -129,29 +130,6 @@ export default function CatalogoPage() {
   const [previewProductsData, setPreviewProductsData] = useState<Product[]>([]);
   const { productsData } = useProducts();
 
-  function handleOnChangeInputSearch(
-    event: ChangeEvent<HTMLInputElement, HTMLInputElement>
-  ) {
-    setQuery(event.target.value);
-    const timeout = window.setTimeout(
-      () => searchProducts(event.target.value),
-      400
-    );
-    return () => window.clearTimeout(timeout);
-
-    async function searchProducts(query: string) {
-      const response = await fetch(`/api/products`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ query })
-      });
-      const data = await response.json();
-      setPreviewProductsData(data.result);
-    }
-  }
-
   const toggle = (
     value: string,
     setter: (values: string[]) => void,
@@ -170,6 +148,19 @@ export default function CatalogoPage() {
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmittedQuery(query.trim());
+  }
+
+  function handleOnChangeInputSearch(
+    event: ChangeEvent<HTMLInputElement, HTMLInputElement>
+  ) {
+    setQuery(event.target.value);
+    //Debounce
+    const timeout = window.setTimeout(async () => {
+      const previewProducts = await searchProducts(event.target.value);
+      setPreviewProductsData(previewProducts);
+    }, 400);
+
+    return () => window.clearTimeout(timeout);
   }
 
   return (
