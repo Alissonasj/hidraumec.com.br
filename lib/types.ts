@@ -6,4 +6,5 @@ export type Product = {
   category: string;
   stock: 'Em estoque' | 'Estoque baixo';
   visual: 'pump' | 'motor' | 'valve';
+  slug: string;
 };
