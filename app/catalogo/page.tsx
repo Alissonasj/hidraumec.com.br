@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/sheet';
 import { useProducts } from '@/hooks/useProducts';
 import { brands, categories } from '@/lib/db';
+import { LinksPath } from '@/lib/links-path';
 import {
   FunnelIcon,
   ListIcon,
@@ -21,6 +22,7 @@ import {
   SquaresFourIcon,
   XIcon
 } from '@phosphor-icons/react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { FilterSection } from './components/filter-section';
 
@@ -229,11 +231,15 @@ export default function CatalogPage() {
               }
             >
               {productsData.map((product) => (
-                <ProductCard
+                <Link
                   key={product.reference}
-                  product={product}
-                  viewMode={viewMode}
-                />
+                  href={`${LinksPath.CATALOGO}/${product.slug}`}
+                >
+                  <ProductCard
+                    product={product}
+                    viewMode={viewMode}
+                  />
+                </Link>
               ))}
             </div>
             {productsData.length === 0 && (

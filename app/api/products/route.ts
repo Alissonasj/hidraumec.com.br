@@ -17,7 +17,7 @@ function previewProducts(query: string) {
 
   return products
     .filter((product) =>
-      `${product.name} ${product.brand} ${product.reference}`
+      `${product.name} ${product.brand} ${product.reference} ${product.slug}`
         .toLowerCase()
         .includes(query.toLowerCase())
     )

@@ -37,6 +37,11 @@ export default function SearchInput() {
     return () => window.clearTimeout(timeout);
   }
 
+  function handleClick(slug: string) {
+    route.push(`${LinksPath.CATALOGO}/${slug}`);
+    setQuery('');
+  }
+
   return (
     <form
       className='relative ml-auto w-full max-w-92.5'
@@ -66,10 +71,9 @@ export default function SearchInput() {
                 <li key={product.reference}>
                   <button
                     type='button'
-                    className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50'
+                    className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'
                     onClick={() => {
-                      setQuery(product.reference);
-                      setSubmittedQuery(product.reference);
+                      handleClick(product.slug);
                     }}
                   >
                     <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
