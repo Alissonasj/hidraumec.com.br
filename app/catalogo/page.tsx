@@ -41,7 +41,7 @@ function Filters({
 }) {
   return (
     <div className='space-y-7'>
-      <div className='flex items-center justify-between border-b border-slate-200 pb-4'>
+      <div className='flex items-center justify-between'>
         <h2 className='font-heading text-lg font-bold text-slate-900'>
           Filtros
         </h2>
@@ -52,6 +52,7 @@ function Filters({
           Limpar
         </button>
       </div>
+      <Separator />
       <FilterSection
         title='Categoria'
         options={categories}
@@ -161,6 +162,7 @@ export default function CatalogPage() {
               clear={clearFilters}
             />
           </aside>
+
           <section>
             <div className='mb-5 flex flex-col gap-4 border-b border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between'>
               <div className='flex items-center gap-3'>
