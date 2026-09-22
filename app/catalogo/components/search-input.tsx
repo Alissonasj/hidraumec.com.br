@@ -19,7 +19,9 @@ export default function SearchInput() {
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (query) {
-      route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`);
+      route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`, {
+        scroll: false
+      });
     }
     setQuery('');
   }

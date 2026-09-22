@@ -13,6 +13,7 @@ import {
   SheetTrigger
 } from '@/components/ui/sheet';
 import { useProducts } from '@/hooks/useProducts';
+import { useUrlParams } from '@/hooks/useUrlParams';
 import { brands, categories } from '@/lib/db';
 import { LinksPath } from '@/lib/links-path';
 import {
@@ -92,21 +93,40 @@ export default function CatalogPage() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const { productsData } = useProducts();
+  const { setUrlSearchParams, clearUrlSearchParams } = useUrlParams();
 
-  const toggle = (
+  function toggle(
     value: string,
     setter: (values: string[]) => void,
     current: string[]
-  ) =>
-    setter(
-      current.includes(value)
-        ? current.filter((item) => item !== value)
-        : [...current, value]
+  ) {
+    const nextValues = current.includes(value)
+      ? current.filter((item) => item !== value)
+      : [...current, value];
+
+    setter(nextValues);
+    return nextValues;
+  }
+
+  function toggleCategory(value: string) {
+    const nextCategories = toggle(
+      value,
+      setSelectedCategories,
+      selectedCategories
     );
-  const clearFilters = () => {
+    setUrlSearchParams('categoria', nextCategories);
+  }
+
+  function toggleBrand(value: string) {
+    const nextBrands = toggle(value, setSelectedBrands, selectedBrands);
+    setUrlSearchParams('marca', nextBrands);
+  }
+
+  function clearFilters() {
     setSelectedCategories([]);
     setSelectedBrands([]);
-  };
+    clearUrlSearchParams(['marca', 'categoria']);
+  }
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] text-slate-900'>
@@ -137,12 +157,8 @@ export default function CatalogPage() {
               <Filters
                 selectedCategories={selectedCategories}
                 selectedBrands={selectedBrands}
-                toggleCategory={(value) =>
-                  toggle(value, setSelectedCategories, selectedCategories)
-                }
-                toggleBrand={(value) =>
-                  toggle(value, setSelectedBrands, selectedBrands)
-                }
+                toggleCategory={toggleCategory}
+                toggleBrand={toggleBrand}
                 clear={clearFilters}
               />
             </SheetContent>
@@ -153,12 +169,8 @@ export default function CatalogPage() {
             <Filters
               selectedCategories={selectedCategories}
               selectedBrands={selectedBrands}
-              toggleCategory={(value) =>
-                toggle(value, setSelectedCategories, selectedCategories)
-              }
-              toggleBrand={(value) =>
-                toggle(value, setSelectedBrands, selectedBrands)
-              }
+              toggleCategory={toggleCategory}
+              toggleBrand={toggleBrand}
               clear={clearFilters}
             />
           </aside>
