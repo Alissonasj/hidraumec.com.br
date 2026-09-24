@@ -8,3 +8,8 @@ export type Product = {
   visual: 'pump' | 'motor' | 'valve';
   slug: string;
 };
+
+export type Filter = {
+  category: string | string[];
+  brand: string | string[];
+};
