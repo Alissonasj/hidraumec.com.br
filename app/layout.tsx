@@ -99,7 +99,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             </nav>
             <nav className='mobile-bottom-nav ml-auto items-center justify-center gap-7 text-xs font-bold uppercase text-white lg:hidden flex h-16 bg-slate-900 px-5 shadow-lg'>
               <Link
-                href='#inicio'
+                href={LinksPath.INICIO}
                 className='hover:text-red-700'
               >
                 <div className='flex flex-col items-center gap-1'>
@@ -107,7 +107,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
                 </div>
               </Link>
               <Link
-                href='#catalogo'
+                href={LinksPath.CATALOGO}
                 className='text-red-700'
               >
                 <div className='flex flex-col items-center gap-1'>

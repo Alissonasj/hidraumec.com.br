@@ -1,6 +1,8 @@
 import ProductCard from '@/components/product-card';
+import { LinksPath } from '@/lib/links-path';
 import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr';
+import Link from 'next/link';
 
 export default async function SearchPage({
   searchParams
@@ -41,10 +43,12 @@ export default async function SearchPage({
         {productsResults.length > 0 ? (
           <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-3'>
             {productsResults.map((product) => (
-              <ProductCard
+              <Link
                 key={product.reference}
-                product={product}
-              />
+                href={`${LinksPath.CATALOGO}/${product.slug}`}
+              >
+                <ProductCard product={product} />
+              </Link>
             ))}
           </div>
         ) : (
