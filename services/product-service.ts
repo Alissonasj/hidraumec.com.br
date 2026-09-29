@@ -21,7 +21,7 @@ async function search(query: string): Promise<Product[]> {
   return data.result;
 }
 
-async function searchByFilter(filter: Filter): Promise<Product[] | undefined> {
+async function searchByFilter(filter: Filter): Promise<Product[]> {
   const url = new URL(`${baseUrl()}/api/products`);
 
   if (Object.keys(filter).length > 0) {
