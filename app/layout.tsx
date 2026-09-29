@@ -79,19 +79,19 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
                 Catálogo
               </Link>
               <Link
-                href='#servicos'
+                href={LinksPath.SERVICES}
                 className='hover:text-red-700'
               >
                 Serviços
               </Link>
               <Link
-                href='#sobre'
+                href={LinksPath.ABOUT}
                 className='hover:text-red-700'
               >
                 Sobre
               </Link>
               <Link
-                href='#contato'
+                href={LinksPath.CONTACT}
                 className='hover:text-red-700'
               >
                 Contato
@@ -115,7 +115,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
                 </div>
               </Link>
               <Link
-                href='#servicos'
+                href={LinksPath.SERVICES}
                 className='hover:text-red-700'
               >
                 <div className='flex flex-col items-center gap-1'>
@@ -123,7 +123,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
                 </div>
               </Link>
               <Link
-                href='#sobre'
+                href={LinksPath.ABOUT}
                 className='hover:text-red-700'
               >
                 <div className='flex flex-col items-center gap-1'>
@@ -131,7 +131,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
                 </div>
               </Link>
               <Link
-                href='#contato'
+                href={LinksPath.CONTACT}
                 className='hover:text-red-700'
               >
                 <div className='flex flex-col items-center gap-1'>
