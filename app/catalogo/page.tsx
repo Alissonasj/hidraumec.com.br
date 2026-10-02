@@ -12,14 +12,20 @@ export default async function CatalogPage({
 }) {
   const allProducts = await productService.fetchAll();
   const params = await searchParams;
-  let filteredProducts: Product[] | undefined = undefined;
+  const hasFilters = Object.keys(params).length > 0;
+  let filteredProducts: Product[] = [];
 
-  if (Object.keys(params).length > 0) {
+  if (hasFilters) {
     filteredProducts = await productService.searchByFilter({
       category: params.categoria,
       brand: params.marca
     });
   }
 
-  return <Catalog products={filteredProducts || allProducts} />;
+  const hasFilteredProducts = filteredProducts.length > 0;
+  const productsToDisplay = hasFilteredProducts
+    ? filteredProducts
+    : allProducts;
+
+  return <Catalog products={productsToDisplay} />;
 }
