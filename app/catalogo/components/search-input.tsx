@@ -18,6 +18,7 @@ export default function SearchInput() {
 
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+
     if (query) {
       route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`, {
         scroll: false
@@ -32,8 +33,10 @@ export default function SearchInput() {
     setQuery(event.target.value);
     //Debounce
     const timeout = window.setTimeout(async () => {
-      const previewProducts = await productService.search(event.target.value);
-      setPreviewProductsData(previewProducts);
+      const previewProductsResult = await productService.search(
+        event.target.value
+      );
+      setPreviewProductsData(previewProductsResult);
     }, 400);
 
     return () => window.clearTimeout(timeout);
@@ -71,6 +74,7 @@ export default function SearchInput() {
             <ul className='divide-y divide-slate-100'>
               {previewProductsData.map((product) => (
                 <li key={product.reference}>
+                  {/* Alterar para Link e remover a função handleClick() */}
                   <button
                     type='button'
                     className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'

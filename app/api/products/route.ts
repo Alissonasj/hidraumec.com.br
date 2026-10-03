@@ -8,9 +8,12 @@ export async function GET(request: NextRequest) {
     category: searchParams.getAll('category'),
     brand: searchParams.getAll('brand')
   };
+  const hasFiltersParams =
+    filter.category.length > 0 || filter.brand.length > 0;
 
-  if (filter.category.length > 0 || filter.brand.length > 0) {
+  if (hasFiltersParams) {
     const filteredProducts = filterProducts(filter);
+
     return NextResponse.json({ filteredProducts }, { status: 200 });
   }
 
@@ -19,9 +22,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  const result = previewProducts(data.query);
+  const previewProductsResult = previewProducts(data.query);
 
-  return NextResponse.json({ result });
+  return NextResponse.json({ previewProductsResult }, { status: 200 });
 }
 
 function filterProducts(filter: Filter): Product[] {

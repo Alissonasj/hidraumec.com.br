@@ -18,13 +18,14 @@ async function search(query: string): Promise<Product[]> {
   });
   const data = await response.json();
 
-  return data.result;
+  return data.previewProductsResult;
 }
 
 async function searchByFilter(filter: Filter): Promise<Product[]> {
   const url = new URL(`${baseUrl()}/api/products`);
+  const hasFilters = Object.keys(filter).length > 0;
 
-  if (Object.keys(filter).length > 0) {
+  if (hasFilters) {
     if (Array.isArray(filter.category)) {
       filter.category.forEach((cat) =>
         url.searchParams.append('category', cat)
@@ -41,6 +42,7 @@ async function searchByFilter(filter: Filter): Promise<Product[]> {
 
     const response = await fetch(url);
     const data = await response.json();
+
     return data.filteredProducts;
   }
 
