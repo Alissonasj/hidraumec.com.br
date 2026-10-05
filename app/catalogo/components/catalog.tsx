@@ -13,7 +13,7 @@ import {
   SheetTrigger
 } from '@/components/ui/sheet';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { brands, categories } from '@/lib/db';
+import { electricSystemOptions, engineSystemOptions } from '@/lib/db';
 import { LinksPath } from '@/lib/links-path';
 import { Product } from '@/lib/types';
 import {
@@ -29,15 +29,11 @@ import { FilterSection } from './filter-section';
 
 function Filters({
   selectedCategories,
-  selectedBrands,
   toggleCategory,
-  toggleBrand,
   clear
 }: {
   selectedCategories: string[];
-  selectedBrands: string[];
   toggleCategory: (value: string) => void;
-  toggleBrand: (value: string) => void;
   clear: () => void;
 }) {
   return (
@@ -55,17 +51,17 @@ function Filters({
       </div>
       <Separator />
       <FilterSection
-        title='Categoria'
-        options={categories}
+        title='Sistema do Motor'
+        options={engineSystemOptions}
         selected={selectedCategories}
         onToggle={toggleCategory}
+        defaultOpen={true}
       />
-      <Separator />
       <FilterSection
-        title='Marca'
-        options={brands}
-        selected={selectedBrands}
-        onToggle={toggleBrand}
+        title='Sistema Elétrico'
+        options={electricSystemOptions}
+        selected={selectedCategories}
+        onToggle={toggleCategory}
       />
       <Separator />
       <div className='space-y-3'>
@@ -90,7 +86,6 @@ function Filters({
 
 export default function Catalog({ products }: { products: Product[] }) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const {
     setUrlSearchParams,
@@ -120,15 +115,9 @@ export default function Catalog({ products }: { products: Product[] }) {
     setUrlSearchParams('categoria', nextCategories);
   }
 
-  function toggleBrand(value: string) {
-    const nextBrands = toggle(value, setSelectedBrands, selectedBrands);
-    setUrlSearchParams('marca', nextBrands);
-  }
-
   function clearFilters() {
     setSelectedCategories([]);
-    setSelectedBrands([]);
-    clearAllUrlSearchParams(['marca', 'categoria']);
+    clearAllUrlSearchParams(['categoria']);
   }
 
   return (
@@ -159,9 +148,7 @@ export default function Catalog({ products }: { products: Product[] }) {
               </SheetHeader>
               <Filters
                 selectedCategories={selectedCategories}
-                selectedBrands={selectedBrands}
                 toggleCategory={toggleCategory}
-                toggleBrand={toggleBrand}
                 clear={clearFilters}
               />
             </SheetContent>
@@ -171,9 +158,7 @@ export default function Catalog({ products }: { products: Product[] }) {
           <aside className='hidden self-start lg:sticky lg:top-8 lg:block'>
             <Filters
               selectedCategories={selectedCategories}
-              selectedBrands={selectedBrands}
               toggleCategory={toggleCategory}
-              toggleBrand={toggleBrand}
               clear={clearFilters}
             />
           </aside>
@@ -220,7 +205,7 @@ export default function Catalog({ products }: { products: Product[] }) {
               </div>
             </div>
             <div className='mb-5 flex flex-wrap gap-2'>
-              {[...selectedCategories, ...selectedBrands].map((tag) => (
+              {selectedCategories.map((tag) => (
                 <Badge
                   key={tag}
                   variant='secondary'
@@ -229,12 +214,14 @@ export default function Catalog({ products }: { products: Product[] }) {
                   {tag}
                   <button
                     onClick={() => {
-                      if (categories.includes(tag)) {
+                      if (
+                        [
+                          ...engineSystemOptions,
+                          ...electricSystemOptions
+                        ].includes(tag)
+                      ) {
                         toggle(tag, setSelectedCategories, selectedCategories);
                         clearOneUrlSeachParams('categoria', tag);
-                      } else {
-                        toggle(tag, setSelectedBrands, selectedBrands);
-                        clearOneUrlSeachParams('marca', tag);
                       }
                     }}
                     aria-label={`Remover filtro ${tag}`}
@@ -253,7 +240,7 @@ export default function Catalog({ products }: { products: Product[] }) {
             >
               {products.map((product) => (
                 <Link
-                  key={product.reference}
+                  key={product.id}
                   href={`${LinksPath.CATALOGO}/${product.slug}`}
                 >
                   <ProductCard

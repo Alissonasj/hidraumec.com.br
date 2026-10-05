@@ -1,4 +1,4 @@
-import { products } from '@/lib/db';
+import { MOCK_PRODUCTS as products } from '@/lib/db';
 import { Filter, Product } from '@/lib/types';
 import { NextRequest, NextResponse } from 'next/server';
 
