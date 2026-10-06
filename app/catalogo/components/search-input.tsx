@@ -1,12 +1,12 @@
 'use client';
 
-import ProductVisual from '@/components/product-visual';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LinksPath } from '@/lib/links-path';
 import { Product } from '@/lib/types';
 import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, SubmitEvent, useState } from 'react';
 
@@ -27,19 +27,14 @@ export default function SearchInput() {
     setQuery('');
   }
 
-  function handleOnChangeInputSearch(
+  async function handleOnChangeInputSearch(
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
   ) {
-    setQuery(event.target.value);
-    //Debounce
-    const timeout = window.setTimeout(async () => {
-      const previewProductsResult = await productService.search(
-        event.target.value
-      );
-      setPreviewProductsData(previewProductsResult);
-    }, 400);
+    const query = event.target.value;
+    const previewProductsResult = await productService.search(query);
 
-    return () => window.clearTimeout(timeout);
+    setQuery(query);
+    setPreviewProductsData(previewProductsResult);
   }
 
   function handleClick(slug: string) {
@@ -73,7 +68,7 @@ export default function SearchInput() {
           {previewProductsData.length > 0 ? (
             <ul className='divide-y divide-slate-100'>
               {previewProductsData.map((product) => (
-                <li key={product.reference}>
+                <li key={product.id}>
                   {/* Alterar para Link e remover a função handleClick() */}
                   <button
                     type='button'
@@ -83,9 +78,12 @@ export default function SearchInput() {
                     }}
                   >
                     <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
-                      <ProductVisual
-                        type={product.visual}
-                        className='!w-[210px] shrink-0 scale-[0.3]'
+                      <Image
+                        src={product.image || '#'}
+                        alt={product.name}
+                        width={500}
+                        height={500}
+                        className='w-96! shrink-0 scale-[0.3]'
                       />
                     </span>
                     <span className='min-w-0'>

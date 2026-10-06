@@ -44,7 +44,7 @@ export default async function SearchPage({
           <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-3'>
             {productsResults.map((product) => (
               <Link
-                key={product.reference}
+                key={product.id}
                 href={`${LinksPath.CATALOGO}/${product.slug}`}
               >
                 <ProductCard product={product} />

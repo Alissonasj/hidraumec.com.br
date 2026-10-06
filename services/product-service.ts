@@ -9,16 +9,12 @@ async function fetchAll(): Promise<Product[]> {
 }
 
 async function search(query: string): Promise<Product[]> {
-  const response = await fetch(`${baseUrl()}/api/products`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
+  const response = await fetch(
+    `${baseUrl()}/api/products/search?query=${encodeURIComponent(query)}`
+  );
   const data = await response.json();
 
-  return data.previewProductsResult;
+  return data.previewProductsResult || [];
 }
 
 async function searchByFilter(filter: Filter): Promise<Product[]> {
@@ -43,7 +39,7 @@ async function searchByFilter(filter: Filter): Promise<Product[]> {
     const response = await fetch(url);
     const data = await response.json();
 
-    return data.filteredProducts;
+    return data.products;
   }
 
   return [];
