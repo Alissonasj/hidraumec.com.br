@@ -31,9 +31,9 @@ export default function SearchInput() {
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
   ) {
     const query = event.target.value;
-    const previewProductsResult = await productService.search(query);
-
     setQuery(query);
+
+    const previewProductsResult = await productService.search(query);
     setPreviewProductsData(previewProductsResult);
   }
 

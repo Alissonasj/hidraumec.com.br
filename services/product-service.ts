@@ -1,24 +1,24 @@
-import { baseUrl } from '@/lib/base-url';
+import { apiUrl } from '@/lib/base-url';
 import { Filter, Product } from '@/lib/types';
 
 async function fetchAll(): Promise<Product[]> {
-  const response = await fetch(`${baseUrl()}/api/products`);
+  const response = await fetch(apiUrl('/api/products'));
   const data = await response.json();
 
   return data.products;
 }
 
 async function search(query: string): Promise<Product[]> {
-  const response = await fetch(
-    `${baseUrl()}/api/products/search?query=${encodeURIComponent(query)}`
-  );
+  const url = apiUrl('/api/products/search');
+  url.searchParams.set('query', query);
+  const response = await fetch(url);
   const data = await response.json();
 
   return data.previewProductsResult || [];
 }
 
 async function searchByFilter(filter: Filter): Promise<Product[]> {
-  const url = new URL(`${baseUrl()}/api/products`);
+  const url = apiUrl('/api/products');
   const hasFilters = Object.keys(filter).length > 0;
 
   if (hasFilters) {
