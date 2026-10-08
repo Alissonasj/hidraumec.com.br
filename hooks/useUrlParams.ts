@@ -6,10 +6,15 @@ export function useUrlParams() {
   const route = useRouter();
   const urlSearchParams = new URLSearchParams(searchParams);
 
-  function setUrlSearchParams(key: string, values: string[]) {
+  function setUrlSearchParams(key: string, values: string | string[]) {
     urlSearchParams.delete(key);
 
-    values.forEach((value) => urlSearchParams.append(key, value));
+    const isArray = Array.isArray(values);
+    if (isArray) {
+      values.forEach((value) => urlSearchParams.append(key, value));
+    } else {
+      urlSearchParams.append(key, values);
+    }
 
     route.replace(`${pathname}?${urlSearchParams}`, { scroll: false });
   }
