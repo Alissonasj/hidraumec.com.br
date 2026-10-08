@@ -20,10 +20,9 @@ export default function SearchInput() {
     event.preventDefault();
 
     if (query) {
-      route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`, {
-        scroll: false
-      });
+      route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`);
     }
+
     setQuery('');
   }
 
@@ -33,7 +32,10 @@ export default function SearchInput() {
     const query = event.target.value;
     setQuery(query);
 
-    const previewProductsResult = await productService.search(query);
+    // Aplicar debounce
+    const { data } = await productService.search(query, 1, 3);
+    const previewProductsResult = data ?? [];
+
     setPreviewProductsData(previewProductsResult);
   }
 

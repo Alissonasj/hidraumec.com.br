@@ -8,9 +8,11 @@ export default async function productDetailsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await productService.search(slug);
+  const { data, pagination } = await productService.search(slug, 1, 1);
+  const product = data ?? [];
+  const totalCount = pagination?.totalCount ?? 0;
 
-  if (product.length === 0) notFound();
+  if (totalCount === 0) notFound();
 
   return <ProductDetails product={product[0]} />;
 }

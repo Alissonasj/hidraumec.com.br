@@ -11,7 +11,9 @@ export default async function SearchPage({
 }) {
   const { search: rawSearch } = await searchParams;
   const search = rawSearch?.trim() ?? '';
-  const productsResults = await productService.search(search);
+  const { data, pagination } = await productService.search(search);
+  const productsResults = data ?? [];
+  const totalCount = pagination?.totalCount ?? 0;
 
   return (
     <main className='min-h-screen bg-[#f8f9fa] text-slate-900'>
@@ -31,16 +33,12 @@ export default async function SearchPage({
             </div>
           </div>
           <p className='shrink-0 text-xs text-slate-500'>
-            <span className='font-bold text-slate-900'>
-              {productsResults.length}
-            </span>{' '}
-            {productsResults.length === 1
-              ? 'item encontrado'
-              : 'itens encontrados'}
+            <span className='font-bold text-slate-900'>{totalCount}</span>{' '}
+            {totalCount === 1 ? 'item encontrado' : 'itens encontrados'}
           </p>
         </section>
 
-        {productsResults.length > 0 ? (
+        {totalCount > 0 ? (
           <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-3'>
             {productsResults.map((product) => (
               <Link

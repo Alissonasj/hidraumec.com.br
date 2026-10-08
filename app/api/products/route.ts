@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/server';
-import { Filter } from '@/lib/types';
+import { FilterOptions } from '@/lib/types';
 import { NextRequest, NextResponse } from 'next/server';
 
 const page = 1;
@@ -7,7 +7,7 @@ const pageSize = 10;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const filter: Filter = {
+  const filter: FilterOptions = {
     category: searchParams.getAll('category'),
     brand: searchParams.getAll('brand')
   };

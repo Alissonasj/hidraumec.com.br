@@ -15,7 +15,7 @@ export type Product = {
   createdAt?: string;
 };
 
-export type Filter = {
+export type FilterOptions = {
   category: string | string[];
   brand: string | string[];
 };
@@ -25,7 +25,6 @@ export type PaginationMeta = {
   pageSize: number;
   totalCount: number;
   totalPages: number;
-  count: number;
   isFirstPage: boolean;
   isLastPage: boolean;
   hasNextPage: boolean;
