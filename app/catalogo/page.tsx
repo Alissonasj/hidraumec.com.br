@@ -13,7 +13,7 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
-  const { data, pagination } = await productService.fetchAll(currentPage, 2, {
+  const { data, pagination } = await productService.fetchAll(currentPage, 10, {
     category: params.categoria,
     brand: params.marca
   });

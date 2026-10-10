@@ -81,7 +81,7 @@ export default function SearchInput() {
                   >
                     <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
                       <Image
-                        src={product.image || '#'}
+                        src={product.image?.[0] || '#'}
                         alt={product.name}
                         width={500}
                         height={500}

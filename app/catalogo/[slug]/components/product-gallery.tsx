@@ -1,6 +1,5 @@
 'use client';
 
-import ProductVisual from '@/components/product-visual';
 import {
   Carousel,
   CarouselContent,
@@ -10,15 +9,14 @@ import {
   type CarouselApi
 } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const views = ['Vista frontal', 'Vista lateral', 'Detalhes', 'Diagrama'];
-
 export default function ProductGallery({
-  visual,
+  productImages,
   productName
 }: {
-  visual: Parameters<typeof ProductVisual>[0]['type'];
+  productImages: string[];
   productName: string;
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -52,15 +50,18 @@ export default function ProductGallery({
             <span className='mr-1'>●</span> Em estoque
           </span>
           <CarouselContent className='-ml-0'>
-            {views.map((view) => (
+            {productImages.map((image) => (
               <CarouselItem
-                key={view}
+                key={image}
                 className='flex min-h-[300px] items-center justify-center pl-0 sm:min-h-[390px] lg:min-h-[430px]'
-                aria-label={`${view} de ${productName}`}
+                aria-label={`${image} de ${productName}`}
               >
-                <ProductVisual
-                  type={visual}
-                  className='scale-[1.35] sm:scale-[1.75] lg:scale-[2]'
+                <Image
+                  className='max-h-48 object-contain'
+                  width={500}
+                  height={500}
+                  src={image}
+                  alt={productName}
                 />
               </CarouselItem>
             ))}
@@ -74,17 +75,17 @@ export default function ProductGallery({
             aria-label='Próxima imagem'
           />
           <span className='absolute bottom-4 right-4 bg-slate-900 px-2 py-1 font-mono text-[10px] text-white'>
-            {currentSlide + 1} / {views.length}
+            {currentSlide + 1} / {productImages.length}
           </span>
         </div>
       </Carousel>
 
       <div className='grid grid-cols-4 gap-2 sm:gap-3'>
-        {views.map((view, index) => (
+        {productImages.map((image, index) => (
           <button
-            key={view}
+            key={image}
             type='button'
-            aria-label={`Visualizar ${view.toLowerCase()} de ${productName}`}
+            aria-label={`Visualizar ${image.toLowerCase()} de ${productName}`}
             aria-pressed={currentSlide === index}
             className={cn(
               'flex aspect-square items-center justify-center overflow-hidden bg-slate-100 transition-colors',
@@ -94,14 +95,17 @@ export default function ProductGallery({
             )}
             onClick={() => carouselApi?.scrollTo(index)}
           >
-            <ProductVisual
-              type={visual}
+            <Image
               className={cn(
                 'scale-75 sm:scale-90',
                 index === 1 && 'rotate-3',
                 index === 2 && '-rotate-3',
                 index === 3 && 'scale-60'
               )}
+              width={500}
+              height={500}
+              src={image}
+              alt={productName}
             />
           </button>
         ))}

@@ -29,8 +29,8 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
           className='max-h-48 object-contain'
           width={500}
           height={500}
-          src={product.image || '#'}
-          alt=''
+          src={product.image?.[0] ?? '#'}
+          alt={product.name}
         />
       </CardHeader>
       <CardContent className='flex flex-1 flex-col gap-3 p-5'>

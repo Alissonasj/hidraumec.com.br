@@ -9,7 +9,7 @@ export type Product = {
   category: string;
   slug: string;
   system: SystemType;
-  image?: string;
+  image?: string[];
   description?: string;
   updatedAt?: string;
   createdAt?: string;

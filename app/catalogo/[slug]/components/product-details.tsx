@@ -13,8 +13,8 @@ import {
   PlusIcon,
   ShoppingCartSimpleIcon
 } from '@phosphor-icons/react/dist/ssr';
-import Image from 'next/image';
 import Link from 'next/link';
+import ProductGallery from './product-gallery';
 
 const specifications = [
   ['Deslocamento', '35 cm³/rev'],
@@ -25,6 +25,8 @@ const specifications = [
 ];
 
 export default function ProductDetails({ product }: { product: Product }) {
+  const safeImages = product.image ?? [];
+
   return (
     <main className='min-h-screen bg-[#f8f9fa] text-slate-900'>
       <div className='mx-auto max-w-360 px-5 py-6 pb-12 lg:px-10 lg:py-8'>
@@ -36,13 +38,10 @@ export default function ProductDetails({ product }: { product: Product }) {
         </Link>
 
         <div className='grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)] lg:gap-14'>
-          <Image
-            src={product.image || '#'}
-            alt={product.name}
-            width={600}
-            height={400}
+          <ProductGallery
+            productName={product.name}
+            productImages={safeImages}
           />
-
           <section className='flex flex-col'>
             <p className='mb-3 font-mono text-xs font-bold uppercase tracking-[0.16em] text-red-700'>
               {product.category}
