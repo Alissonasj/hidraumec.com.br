@@ -4,6 +4,15 @@ import ProductCard from '@/components/product-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination';
 import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
@@ -16,15 +25,6 @@ import { useUrlParams } from '@/hooks/useUrlParams';
 import { electricSystemOptions, engineSystemOptions } from '@/lib/db';
 import { LinksPath } from '@/lib/links-path';
 import { PaginationMeta, Product } from '@/lib/types';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious
-} from '@/components/ui/pagination';
 import {
   FunnelIcon,
   ListIcon,
@@ -101,7 +101,10 @@ type CatalogProps = {
 
 type VisiblePage = number | 'ellipsis';
 
-function getVisiblePages(currentPage: number, totalPages: number): VisiblePage[] {
+function getVisiblePages(
+  currentPage: number,
+  totalPages: number
+): VisiblePage[] {
   const pages: VisiblePage[] = [];
 
   for (let page = 1; page <= totalPages; page += 1) {
@@ -136,7 +139,10 @@ export default function Catalog({ products, pagination }: CatalogProps) {
     return `${pathname}?${params.toString()}`;
   }
 
-  function handlePageChange(event: MouseEvent<HTMLAnchorElement>, page: number) {
+  function handlePageChange(
+    event: MouseEvent<HTMLAnchorElement>,
+    page: number
+  ) {
     event.preventDefault();
 
     if (
@@ -168,6 +174,7 @@ export default function Catalog({ products, pagination }: CatalogProps) {
       selectedCategories
     );
     setUrlSearchParams('categoria', nextCategories);
+    clearAllUrlSearchParams(['page']);
   }
 
   function clearFilters() {
