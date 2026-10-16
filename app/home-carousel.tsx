@@ -1,9 +1,5 @@
 'use client';
 
-import Autoplay from 'embla-carousel-autoplay';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +7,10 @@ import {
   type CarouselApi
 } from '@/components/ui/carousel';
 import { LinksPath } from '@/lib/links-path';
+import Autoplay from 'embla-carousel-autoplay';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import hydraulicImage from './image/category-hydraulics.png';
 import wearImage from './image/category-wear.png';
 import excavatorImage from './image/hero-excavator-clean.png';
@@ -77,8 +77,7 @@ export default function HomeCarousel() {
   useEffect(() => {
     if (!carouselApi) return;
 
-    const handleSelect = () =>
-      setActiveSlide(carouselApi.selectedScrollSnap());
+    const handleSelect = () => setActiveSlide(carouselApi.selectedScrollSnap());
 
     handleSelect();
     carouselApi.on('select', handleSelect);
@@ -228,12 +227,26 @@ export default function HomeCarousel() {
               className='flex size-11 items-center justify-center border border-white/40 text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60'
             >
               {isRotating ? (
-                <svg aria-hidden='true' className='size-4' viewBox='0 0 16 16'>
-                  <path d='M5 3h2v10H5zm4 0h2v10H9z' fill='currentColor' />
+                <svg
+                  aria-hidden='true'
+                  className='size-4'
+                  viewBox='0 0 16 16'
+                >
+                  <path
+                    d='M5 3h2v10H5zm4 0h2v10H9z'
+                    fill='currentColor'
+                  />
                 </svg>
               ) : (
-                <svg aria-hidden='true' className='size-4' viewBox='0 0 16 16'>
-                  <path d='m5 3 8 5-8 5V3Z' fill='currentColor' />
+                <svg
+                  aria-hidden='true'
+                  className='size-4'
+                  viewBox='0 0 16 16'
+                >
+                  <path
+                    d='m5 3 8 5-8 5V3Z'
+                    fill='currentColor'
+                  />
                 </svg>
               )}
             </button>
