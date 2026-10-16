@@ -14,6 +14,7 @@ export default function SearchInput() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [previewProductsData, setPreviewProductsData] = useState<Product[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
   const route = useRouter();
 
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
@@ -54,6 +55,9 @@ export default function SearchInput() {
         <Input
           value={query}
           onChange={handleOnChangeInputSearch}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          type='search'
           placeholder='Buscar peças...'
           className='h-11 rounded-none border-0 bg-transparent pl-3'
           aria-label='Buscar peças'
@@ -67,44 +71,45 @@ export default function SearchInput() {
       </div>
       {query.trim() && query.trim() !== submittedQuery && (
         <div className='absolute left-0 right-0 top-full z-20 border border-t-0 border-slate-200 bg-white shadow-lg'>
-          {previewProductsData.length > 0 ? (
-            <ul className='divide-y divide-slate-100'>
-              {previewProductsData.map((product) => (
-                <li key={product.id}>
-                  {/* Alterar para Link e remover a função handleClick() */}
-                  <button
-                    type='button'
-                    className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'
-                    onClick={() => {
-                      handleClick(product.slug);
-                    }}
-                  >
-                    <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
-                      <Image
-                        src={product.image?.[0] || '#'}
-                        alt={product.name}
-                        width={500}
-                        height={500}
-                        className='w-96! shrink-0 scale-[0.3]'
-                      />
-                    </span>
-                    <span className='min-w-0'>
-                      <span className='block truncate text-xs font-bold text-slate-800'>
-                        {product.name}
+          {isFocused &&
+            (previewProductsData.length > 0 ? (
+              <ul className='divide-y divide-slate-100'>
+                {previewProductsData.map((product) => (
+                  <li key={product.id}>
+                    {/* Alterar para Link e remover a função handleClick() */}
+                    <button
+                      type='button'
+                      className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'
+                      onClick={() => {
+                        handleClick(product.slug);
+                      }}
+                    >
+                      <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
+                        <Image
+                          src={product.image?.[0] || '#'}
+                          alt={product.name}
+                          width={500}
+                          height={500}
+                          className='w-96! shrink-0 scale-[0.3]'
+                        />
                       </span>
-                      <span className='mt-1 block text-[10px] uppercase tracking-[0.08em] text-slate-500'>
-                        {product.brand} · Ref: {product.reference}
+                      <span className='min-w-0'>
+                        <span className='block truncate text-xs font-bold text-slate-800'>
+                          {product.name}
+                        </span>
+                        <span className='mt-1 block text-[10px] uppercase tracking-[0.08em] text-slate-500'>
+                          {product.brand} · Ref: {product.reference}
+                        </span>
                       </span>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className='px-4 py-3 text-xs text-slate-500'>
-              Nenhuma peça encontrada.
-            </p>
-          )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className='px-4 py-3 text-xs text-slate-500'>
+                Nenhuma peça encontrada.
+              </p>
+            ))}
         </div>
       )}
     </form>
