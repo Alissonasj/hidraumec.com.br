@@ -1,6 +1,13 @@
 import { PaginationMeta } from '@/lib/types';
 import { productService } from '@/services/product-service';
+import { Metadata } from 'next';
 import Catalog from './components/catalog';
+
+export const metadata: Metadata = {
+  title: 'Hidraumec | Catálogo de Peças',
+  description:
+    'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.'
+};
 
 export default async function CatalogPage({
   searchParams
