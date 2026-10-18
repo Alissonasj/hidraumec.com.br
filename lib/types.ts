@@ -1,6 +1,14 @@
-type SystemType = 'Motor' | 'Eletrico' | 'Transmissao' | 'Freio' | 'Direcao';
+// Criar uma função para gerar o slug com base no nome e referência do produto antes de salvar no banco de dados.
 
-export type Product = {
+// function getSlug(name: string, reference: string): string {
+//   return `${name.toLowerCase().replace(/\s+/g, '-')}-${reference.toLowerCase()}`;
+// }
+
+type SystemType = 'Motor' | 'Eletrico' | 'Transmissao' | 'Freio' | 'Direcao';
+const engineSystemOptions = ['Tanque', 'Filtro', 'Separador'];
+const electricSystemOptions = ['Bateria', 'Alternador', 'Motor de Partida'];
+
+type Product = {
   id: string;
   name: string;
   brand: string;
@@ -15,12 +23,12 @@ export type Product = {
   createdAt?: string;
 };
 
-export type FilterOptions = {
+type FilterOptions = {
   category: string | string[];
   brand: string | string[];
 };
 
-export type PaginationMeta = {
+type PaginationMeta = {
   currentPage: number;
   pageSize: number;
   totalCount: number;
@@ -49,4 +57,16 @@ type ServerDtoError = {
   pagination: null;
 };
 
-export type ServerDto<T> = ServerDtoSuccess<T> | ServerDtoError;
+type ServerDto<T> = ServerDtoSuccess<T> | ServerDtoError;
+
+export { electricSystemOptions, engineSystemOptions };
+
+export type {
+  FilterOptions,
+  PaginationMeta,
+  Product,
+  ServerDto,
+  ServerDtoError,
+  ServerDtoSuccess,
+  SystemType
+};
