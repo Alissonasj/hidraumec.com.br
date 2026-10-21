@@ -7,13 +7,15 @@ import { Product } from '@/lib/types';
 import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, SubmitEvent, useState } from 'react';
+import { ChangeEvent, FocusEvent, SubmitEvent, useState } from 'react';
 
 export default function SearchInput() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [previewProductsData, setPreviewProductsData] = useState<Product[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
   const route = useRouter();
 
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
@@ -39,21 +41,36 @@ export default function SearchInput() {
     setPreviewProductsData(previewProductsResult);
   }
 
-  function handleClick(slug: string) {
-    route.push(`${LinksPath.CATALOGO}/${slug}`);
+  function inputClear() {
     setQuery('');
+  }
+
+  function handleFocus() {
+    setIsFocused(true);
+  }
+
+  function handleBlur(event: FocusEvent<HTMLFormElement, Element>) {
+    if (
+      !(event.relatedTarget instanceof Node) ||
+      !event.currentTarget.contains(event.relatedTarget)
+    ) {
+      setIsFocused(false);
+    }
   }
 
   return (
     <form
       className='relative ml-auto w-full max-w-92.5'
       onSubmit={submitSearch}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     >
       <div className='flex bg-slate-100'>
         <MagnifyingGlassIcon className='ml-4 mt-3.5 size-4 shrink-0 text-slate-500' />
         <Input
           value={query}
           onChange={handleOnChangeInputSearch}
+          type='search'
           placeholder='Buscar peças...'
           className='h-11 rounded-none border-0 bg-transparent pl-3'
           aria-label='Buscar peças'
@@ -65,19 +82,16 @@ export default function SearchInput() {
           Pesquisar
         </Button>
       </div>
-      {query.trim() && query.trim() !== submittedQuery && (
+      {query.trim() && query.trim() !== submittedQuery && isFocused && (
         <div className='absolute left-0 right-0 top-full z-20 border border-t-0 border-slate-200 bg-white shadow-lg'>
           {previewProductsData.length > 0 ? (
             <ul className='divide-y divide-slate-100'>
               {previewProductsData.map((product) => (
                 <li key={product.id}>
-                  {/* Alterar para Link e remover a função handleClick() */}
-                  <button
-                    type='button'
+                  <Link
+                    onClick={inputClear}
+                    href={`${LinksPath.CATALOGO}/${product.slug}`}
                     className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'
-                    onClick={() => {
-                      handleClick(product.slug);
-                    }}
                   >
                     <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
                       <Image
@@ -96,7 +110,7 @@ export default function SearchInput() {
                         {product.brand} · Ref: {product.reference}
                       </span>
                     </span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

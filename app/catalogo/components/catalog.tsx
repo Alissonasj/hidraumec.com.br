@@ -22,9 +22,13 @@ import {
   SheetTrigger
 } from '@/components/ui/sheet';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { electricSystemOptions, engineSystemOptions } from '@/lib/db';
 import { LinksPath } from '@/lib/links-path';
-import { PaginationMeta, Product } from '@/lib/types';
+import {
+  electricSystemOptions,
+  engineSystemOptions,
+  PaginationMeta,
+  Product
+} from '@/lib/types';
 import {
   FunnelIcon,
   ListIcon,
