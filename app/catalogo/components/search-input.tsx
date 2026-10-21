@@ -7,6 +7,7 @@ import { Product } from '@/lib/types';
 import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FocusEvent, SubmitEvent, useState } from 'react';
 
@@ -40,8 +41,7 @@ export default function SearchInput() {
     setPreviewProductsData(previewProductsResult);
   }
 
-  function handleClick(slug: string) {
-    route.push(`${LinksPath.CATALOGO}/${slug}`);
+  function inputClear() {
     setQuery('');
   }
 
@@ -88,13 +88,10 @@ export default function SearchInput() {
             <ul className='divide-y divide-slate-100'>
               {previewProductsData.map((product) => (
                 <li key={product.id}>
-                  {/* Alterar para Link e remover a função handleClick() */}
-                  <button
-                    type='button'
+                  <Link
+                    onClick={inputClear}
+                    href={`${LinksPath.CATALOGO}/${product.slug}`}
                     className='flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 cursor-pointer'
-                    onClick={() => {
-                      handleClick(product.slug);
-                    }}
                   >
                     <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
                       <Image
@@ -113,7 +110,7 @@ export default function SearchInput() {
                         {product.brand} · Ref: {product.reference}
                       </span>
                     </span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
