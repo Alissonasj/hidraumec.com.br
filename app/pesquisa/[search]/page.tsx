@@ -1,19 +1,28 @@
+import PaginationRender from '@/components/pagination-render';
 import ProductCard from '@/components/product-card';
 import { LinksPath } from '@/lib/links-path';
+import { defaultPagination } from '@/lib/types';
 import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
 export default async function SearchPage({
+  params,
   searchParams
 }: {
-  searchParams: Promise<{ search: string }>;
+  params: Promise<{ search: string }>;
+  searchParams: Promise<{ page: string }>;
 }) {
-  const { search: rawSearch } = await searchParams;
-  const search = rawSearch?.trim() ?? '';
-  const { data, pagination } = await productService.search(search);
+  const pParams = await params;
+  const sParams = await searchParams;
+  const currentPage = Number(sParams.page) || 1;
+  const { data, pagination } = await productService.search(
+    pParams.search,
+    currentPage,
+    10
+  );
   const productsResults = data ?? [];
-  const totalCount = pagination?.totalCount ?? 0;
+  const safePagination = pagination ?? defaultPagination;
 
   return (
     <main className='min-h-screen bg-[#f8f9fa] text-slate-900'>
@@ -28,27 +37,36 @@ export default async function SearchPage({
                 Resultado da pesquisa
               </p>
               <h1 className='wrap-break-word font-heading text-xl font-bold leading-tight'>
-                {search || 'Todas as peças'}
+                {pParams.search}
               </h1>
             </div>
           </div>
           <p className='shrink-0 text-xs text-slate-500'>
-            <span className='font-bold text-slate-900'>{totalCount}</span>{' '}
-            {totalCount === 1 ? 'item encontrado' : 'itens encontrados'}
+            <span className='font-bold text-slate-900'>
+              {safePagination.totalCount}
+            </span>{' '}
+            {safePagination.totalCount === 1
+              ? 'item encontrado'
+              : 'itens encontrados'}
           </p>
         </section>
 
-        {totalCount > 0 ? (
-          <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-3'>
-            {productsResults.map((product) => (
-              <Link
-                key={product.id}
-                href={`${LinksPath.CATALOGO}/${product.slug}`}
-              >
-                <ProductCard product={product} />
-              </Link>
-            ))}
-          </div>
+        {safePagination.totalCount > 0 ? (
+          <section>
+            <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-3'>
+              {productsResults.map((product) => (
+                <Link
+                  key={product.id}
+                  href={`${LinksPath.CATALOGO}/${product.slug}`}
+                >
+                  <ProductCard product={product} />
+                </Link>
+              ))}
+            </div>
+            {safePagination.totalCount > 10 && (
+              <PaginationRender pagination={safePagination} />
+            )}
+          </section>
         ) : (
           <section className='flex min-h-56 flex-col items-center justify-center border border-dashed border-slate-300 bg-white px-5 py-12 text-center'>
             <MagnifyingGlassIcon className='mb-3 size-8 text-slate-300' />

@@ -5,9 +5,6 @@
 // }
 
 type SystemType = 'Motor' | 'Eletrico' | 'Transmissao' | 'Freio' | 'Direcao';
-const engineSystemOptions = ['Tanque', 'Filtro', 'Separador'];
-const electricSystemOptions = ['Bateria', 'Alternador', 'Motor de Partida'];
-
 type Product = {
   id: string;
   name: string;
@@ -22,12 +19,10 @@ type Product = {
   updatedAt?: string;
   createdAt?: string;
 };
-
 type FilterOptions = {
   category: string | string[];
   brand: string | string[];
 };
-
 type PaginationMeta = {
   currentPage: number;
   pageSize: number;
@@ -38,14 +33,12 @@ type PaginationMeta = {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
 };
-
 type ServerDtoSuccess<T> = {
   success: true;
   data: T;
   error: null;
   pagination: PaginationMeta | null;
 };
-
 type ServerDtoError = {
   success: false;
   data: null;
@@ -56,10 +49,23 @@ type ServerDtoError = {
   };
   pagination: null;
 };
-
+type VisiblePage = number | 'ellipsis';
 type ServerDto<T> = ServerDtoSuccess<T> | ServerDtoError;
 
-export { electricSystemOptions, engineSystemOptions };
+const engineSystemOptions = ['Tanque', 'Filtro', 'Separador'];
+const electricSystemOptions = ['Bateria', 'Alternador', 'Motor de Partida'];
+const defaultPagination: PaginationMeta = {
+  currentPage: 1,
+  pageSize: 10,
+  totalCount: 0,
+  totalPages: 0,
+  hasNextPage: false,
+  hasPreviousPage: false,
+  isFirstPage: true,
+  isLastPage: true
+};
+
+export { defaultPagination, electricSystemOptions, engineSystemOptions };
 
 export type {
   FilterOptions,
@@ -68,5 +74,6 @@ export type {
   ServerDto,
   ServerDtoError,
   ServerDtoSuccess,
-  SystemType
+  SystemType,
+  VisiblePage
 };
