@@ -1,3 +1,4 @@
+import { LinksPath } from '@/lib/links-path';
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -9,19 +10,11 @@ import {
   WrenchIcon
 } from '@phosphor-icons/react/dist/ssr';
 import Image from 'next/image';
-import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LinksPath } from '@/lib/links-path';
 import HomeCarousel from './home-carousel';
 import engineImage from './image/category-engine.png';
 import hydraulicImage from './image/category-hydraulics.png';
 import wearImage from './image/category-wear.png';
-
-export const metadata: Metadata = {
-  title: 'Hidraumec | Peças e Serviços Hidráulicos',
-  description:
-    'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.'
-};
 
 const categories = [
   {
@@ -105,7 +98,10 @@ export default function Home() {
             className='inline-flex min-h-11 w-fit items-center gap-2 font-semibold text-red-700 transition-colors hover:text-red-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-700'
           >
             Ver todo o catálogo
-            <ArrowRightIcon aria-hidden='true' weight='bold' />
+            <ArrowRightIcon
+              aria-hidden='true'
+              weight='bold'
+            />
           </Link>
         </div>
 
@@ -131,7 +127,10 @@ export default function Home() {
                 aria-hidden='true'
                 className='absolute right-5 top-5 flex size-14 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm'
               >
-                <Icon className='size-7' weight='light' />
+                <Icon
+                  className='size-7'
+                  weight='light'
+                />
               </div>
               <div className='relative'>
                 <h3 className='text-xl font-semibold leading-snug sm:text-2xl'>
@@ -182,7 +181,11 @@ export default function Home() {
                   className='flex gap-4 rounded-sm border border-slate-200 bg-white p-5'
                 >
                   <span className='flex size-11 shrink-0 items-center justify-center bg-red-50 text-red-700'>
-                    <Icon aria-hidden='true' className='size-6' weight='regular' />
+                    <Icon
+                      aria-hidden='true'
+                      className='size-6'
+                      weight='regular'
+                    />
                   </span>
                   <div>
                     <h3 className='font-semibold'>{title}</h3>
@@ -226,12 +229,13 @@ export default function Home() {
                 className='size-5 text-red-700'
                 weight='fill'
               />
-              <span className='text-xs font-semibold'>Compromisso em cada serviço</span>
+              <span className='text-xs font-semibold'>
+                Compromisso em cada serviço
+              </span>
             </div>
           </div>
         </div>
       </section>
-
     </main>
   );
 }
