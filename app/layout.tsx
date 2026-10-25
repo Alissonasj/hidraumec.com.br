@@ -38,6 +38,7 @@ export const metadata: Metadata = {
   },
   description:
     'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.',
+  authors: [{ name: 'Alisson Silva', url: 'https://github.com/alissonasj' }],
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
