@@ -21,8 +21,8 @@ export default function SearchInput() {
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (query) {
-      route.push(`${LinksPath.PESQUISA}?search=${query.trim()}`);
+    if (query.trim().length > 0) {
+      route.push(`${LinksPath.PESQUISA}/${query}`);
     }
 
     setQuery('');

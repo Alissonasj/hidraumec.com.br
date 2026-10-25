@@ -32,15 +32,47 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Hidraumec | Peças e Serviços Hidráulicos',
+  title: {
+    default: 'Peças e Serviços Hidráulicos | Hidraumec',
+    template: '%s | Hidraumec'
+  },
   description:
-    'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.'
+    'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.',
+  authors: [{ name: 'Alisson Silva', url: 'https://github.com/alissonasj' }],
+  alternates: {
+    canonical: 'https://hidraumec.com.br',
+    languages: { 'pt-BR': 'https://hidraumec.com.br' }
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Hidraumec',
+    images: [
+      {
+        url: '/image/category-wear.png',
+        width: 1200,
+        height: 630,
+        alt: 'Logo da Hidraumec'
+      }
+    ]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  }
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
-      lang='en'
+      lang='pt-BR'
       className={cn(
         'h-full',
         'antialiased',
