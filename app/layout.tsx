@@ -39,11 +39,22 @@ export const metadata: Metadata = {
   description:
     'Peças, serviços e suporte hidráulico para máquinas pesadas. Experiência e confiança para manter sua operação em movimento.',
   authors: [{ name: 'Alisson Silva', url: 'https://github.com/alissonasj' }],
+  alternates: {
+    canonical: 'https://hidraumec.com.br',
+    languages: { 'pt-BR': 'https://hidraumec.com.br' }
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     siteName: 'Hidraumec',
-    images: [{ url: '/image/category-wear.png', width: 1200, height: 630 }]
+    images: [
+      {
+        url: '/image/category-wear.png',
+        width: 1200,
+        height: 630,
+        alt: 'Logo da Hidraumec'
+      }
+    ]
   },
   robots: {
     index: true,
