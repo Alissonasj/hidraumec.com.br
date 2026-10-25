@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/client';
 import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
 
+// CRIAR SERVIÇOS QUE RETORNEM APENAS UM PRODUTO EX.: FIND ONE BY. DEPOIS RENOMAR AS FUNÇÕES EXISTENTES PARA ALGO MAIS SEMÂTICO
+
 async function fetchAll(
   currentPage = 1,
   pageSize = 10,
@@ -25,13 +27,22 @@ async function fetchAll(
     query = query.in('category', categories);
   }
 
-  const { data, count } = await query.range(from, to);
-  const products = data ?? [];
+  const { data, count, error } = await query.range(from, to);
+
+  if (error) {
+    return {
+      success: false,
+      data: null,
+      error,
+      pagination: null
+    };
+  }
+
   const totalCount = count ?? 0;
 
   return {
     success: true,
-    data: products,
+    data,
     error: null,
     pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
   };
@@ -47,7 +58,7 @@ async function search(
   const from = (currentPage - 1) * pageSize;
   const to = from + pageSize - 1;
   const supabase = createClient();
-  const { data, count } = await supabase
+  const { data, count, error } = await supabase
     .from('products')
     .select('*', { count: 'exact' })
     .order('name', { ascending: true })
@@ -60,20 +71,55 @@ async function search(
     )
     .range(from, to);
 
-  const searchProductResults = data ?? [];
+  if (error) {
+    return {
+      success: false,
+      data: null,
+      error,
+      pagination: null
+    };
+  }
+
   const totalCount = count ?? 0;
 
   return {
     success: true,
-    data: searchProductResults || [],
+    data,
     error: null,
     pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
   };
 }
 
+async function getAllSlugs(): Promise<
+  ServerDto<Pick<Product, 'slug' | 'updatedAt'>[]>
+> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select('slug, updated_at')
+    .order('updated_at', { ascending: true });
+
+  if (error) {
+    return {
+      success: false,
+      data: null,
+      error,
+      pagination: null
+    };
+  }
+
+  return {
+    success: true,
+    data,
+    error: null,
+    pagination: null
+  };
+}
+
 export const productService = {
   fetchAll,
-  search
+  search,
+  getAllSlugs
 };
 
 export function createPaginatedResponse(
