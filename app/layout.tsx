@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     siteName: 'Hidraumec',
     images: [
       {
-        url: '/image/category-wear.png',
+        url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500',
         width: 1200,
         height: 630,
         alt: 'Logo da Hidraumec'

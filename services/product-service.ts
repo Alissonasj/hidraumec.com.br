@@ -3,15 +3,15 @@ import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
 
 // CRIAR SERVIÇOS QUE RETORNEM APENAS UM PRODUTO EX.: FIND ONE BY. DEPOIS RENOMAR AS FUNÇÕES EXISTENTES PARA ALGO MAIS SEMÂTICO
 
-async function fetchAll(
+async function getAll(
   currentPage = 1,
-  pageSize = 10,
+  totalItemsPerPage = 10,
   filter?: FilterOptions
 ): Promise<ServerDto<Product[]>> {
   const isUndefinedFilter = filter === undefined;
   const hasFiltersParams = !isUndefinedFilter && filter?.category !== undefined;
-  const from = (currentPage - 1) * pageSize;
-  const to = from + pageSize - 1;
+  const from = (currentPage - 1) * totalItemsPerPage;
+  const to = from + totalItemsPerPage - 1;
   const supabase = createClient();
 
   let query = supabase
@@ -44,19 +44,23 @@ async function fetchAll(
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
+    pagination: createPaginatedResponse(
+      currentPage,
+      totalItemsPerPage,
+      totalCount
+    )
   };
 }
 
-async function search(
+async function getByText(
   text: string,
   currentPage = 1,
-  pageSize = 10
+  totalItemsPerPage = 10
 ): Promise<ServerDto<Product[]>> {
   text = text.trim().toUpperCase() || '';
 
-  const from = (currentPage - 1) * pageSize;
-  const to = from + pageSize - 1;
+  const from = (currentPage - 1) * totalItemsPerPage;
+  const to = from + totalItemsPerPage - 1;
   const supabase = createClient();
   const { data, count, error } = await supabase
     .from('products')
@@ -86,7 +90,11 @@ async function search(
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
+    pagination: createPaginatedResponse(
+      currentPage,
+      totalItemsPerPage,
+      totalCount
+    )
   };
 }
 
@@ -117,21 +125,21 @@ async function getAllSlugs(): Promise<
 }
 
 export const productService = {
-  fetchAll,
-  search,
+  getAll,
+  getByText,
   getAllSlugs
 };
 
 export function createPaginatedResponse(
   currentPage: number,
-  pageSize: number,
+  totalItemsPerPage: number,
   totalCount: number
 ): PaginationMeta {
-  const totalPages = Math.ceil(totalCount / pageSize) || 1;
+  const totalPages = Math.ceil(totalCount / totalItemsPerPage) || 1;
 
   return {
     currentPage,
-    pageSize,
+    totalItemsPerPage,
     totalCount,
     totalPages,
     isFirstPage: currentPage === 1,

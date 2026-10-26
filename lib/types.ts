@@ -25,7 +25,7 @@ type FilterOptions = {
 };
 type PaginationMeta = {
   currentPage: number;
-  pageSize: number;
+  totalItemsPerPage: number;
   totalCount: number;
   totalPages: number;
   isFirstPage: boolean;
@@ -56,7 +56,7 @@ const engineSystemOptions = ['Tanque', 'Filtro', 'Separador'];
 const electricSystemOptions = ['Bateria', 'Alternador', 'Motor de Partida'];
 const defaultPagination: PaginationMeta = {
   currentPage: 1,
-  pageSize: 10,
+  totalItemsPerPage: 10,
   totalCount: 0,
   totalPages: 0,
   hasNextPage: false,

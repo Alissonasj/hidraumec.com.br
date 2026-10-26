@@ -16,7 +16,7 @@ export default async function SearchPage({
   const pParams = await params;
   const sParams = await searchParams;
   const currentPage = Number(sParams.page) || 1;
-  const { data, pagination } = await productService.search(
+  const { data, pagination } = await productService.getByText(
     pParams.search,
     currentPage,
     10

@@ -35,7 +35,7 @@ export default function SearchInput() {
     setQuery(query);
 
     // Aplicar debounce
-    const { data } = await productService.search(query, 1, 3);
+    const { data } = await productService.getByText(query, 1, 3);
     const previewProductsResult = data ?? [];
 
     setPreviewProductsData(previewProductsResult);

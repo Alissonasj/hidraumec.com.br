@@ -18,7 +18,7 @@ export default async function CatalogPage({
 }) {
   const sParams = await searchParams;
   const currentPage = Number(sParams.page) || 1;
-  const { data, pagination } = await productService.fetchAll(currentPage, 10, {
+  const { data, pagination } = await productService.getAll(currentPage, 10, {
     category: sParams.categoria,
     brand: sParams.marca
   });
