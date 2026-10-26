@@ -39,11 +39,9 @@ export default async function productDetailsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { data, pagination } = await productService.getByText(slug, 1, 1);
-  const product = data ?? [];
-  const totalCount = pagination?.totalCount ?? 0;
+  const { data: product } = await productService.getOneBySlug(slug);
 
-  if (totalCount === 0) notFound();
+  if (product === null) notFound();
 
-  return <ProductDetails product={product[0]} />;
+  return <ProductDetails product={product} />;
 }

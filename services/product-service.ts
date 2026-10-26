@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/client';
 import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
 
-// CRIAR SERVIÇOS QUE RETORNEM APENAS UM PRODUTO EX.: FIND ONE BY. DEPOIS RENOMAR AS FUNÇÕES EXISTENTES PARA ALGO MAIS SEMÂTICO
-
 async function getAll(
   currentPage = 1,
   totalItemsPerPage = 10,
@@ -39,16 +37,17 @@ async function getAll(
   }
 
   const totalCount = count ?? 0;
+  const pagination = createPaginatedResponse(
+    currentPage,
+    totalItemsPerPage,
+    totalCount
+  );
 
   return {
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(
-      currentPage,
-      totalItemsPerPage,
-      totalCount
-    )
+    pagination
   };
 }
 
@@ -85,16 +84,42 @@ async function getByText(
   }
 
   const totalCount = count ?? 0;
+  const pagination = createPaginatedResponse(
+    currentPage,
+    totalItemsPerPage,
+    totalCount
+  );
 
   return {
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(
-      currentPage,
-      totalItemsPerPage,
-      totalCount
-    )
+    pagination
+  };
+}
+
+async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    return {
+      success: false,
+      data: null,
+      error,
+      pagination: null
+    };
+  }
+
+  return {
+    success: true,
+    data,
+    error: null,
+    pagination: null
   };
 }
 
@@ -127,6 +152,7 @@ async function getAllSlugs(): Promise<
 export const productService = {
   getAll,
   getByText,
+  getOneBySlug,
   getAllSlugs
 };
 
