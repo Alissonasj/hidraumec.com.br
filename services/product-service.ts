@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/client';
+import { createClient } from '@/lib/server';
 import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
 
 async function getAll(
@@ -10,7 +10,7 @@ async function getAll(
   const hasFiltersParams = !isUndefinedFilter && filter?.category !== undefined;
   const from = (currentPage - 1) * totalItemsPerPage;
   const to = from + totalItemsPerPage - 1;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   let query = supabase
     .from('products')
@@ -60,7 +60,7 @@ async function getByText(
 
   const from = (currentPage - 1) * totalItemsPerPage;
   const to = from + totalItemsPerPage - 1;
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, count, error } = await supabase
     .from('products')
     .select('*', { count: 'exact' })
@@ -99,7 +99,7 @@ async function getByText(
 }
 
 async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -126,7 +126,7 @@ async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
 async function getAllSlugs(): Promise<
   ServerDto<Pick<Product, 'slug' | 'updatedAt'>[]>
 > {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('products')
     .select('slug, updated_at')

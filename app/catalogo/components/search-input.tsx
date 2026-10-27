@@ -1,10 +1,10 @@
 'use client';
 
+import { getProductsByTextAction } from '@/actions/product-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LinksPath } from '@/lib/links-path';
 import { Product } from '@/lib/types';
-import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -35,7 +35,7 @@ export default function SearchInput() {
     setQuery(query);
 
     // Aplicar debounce
-    const { data } = await productService.getByText(query, 1, 3);
+    const { data } = await getProductsByTextAction(query, 1, 3);
     const previewProductsResult = data ?? [];
 
     setPreviewProductsData(previewProductsResult);
