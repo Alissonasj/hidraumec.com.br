@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from "cn"
 import { SpinnerIcon } from "@phosphor-icons/react"
 
