@@ -20,8 +20,8 @@ type Product = {
   createdAt?: string;
 };
 type FilterOptions = {
-  category: string | string[];
-  brand: string | string[];
+  category?: string | string[];
+  brand?: string | string[];
 };
 type PaginationMeta = {
   currentPage: number;

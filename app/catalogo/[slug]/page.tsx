@@ -33,15 +33,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function productDetailsPage({
-  params
-}: {
+type ProductDetailsProps = {
   params: Promise<{ slug: string }>;
-}) {
+};
+
+async function ProductDetailsDataFetch({ params }: ProductDetailsProps) {
   const { slug } = await params;
   const { data: product } = await productService.getOneBySlug(slug);
 
   if (product === null) notFound();
 
   return <ProductDetails product={product} />;
+}
+
+export default function ProductDetailsPage({ params }: ProductDetailsProps) {
+  return <ProductDetailsDataFetch params={params} />;
 }

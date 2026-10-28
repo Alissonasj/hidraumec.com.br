@@ -1,16 +1,22 @@
-import { createClient } from '@/lib/server';
+import { createPublicClient } from '@/lib/public-server';
 import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
+import { cacheLife, cacheTag } from 'next/cache';
 
 async function getAll(
   currentPage = 1,
   totalItemsPerPage = 10,
   filter?: FilterOptions
 ): Promise<ServerDto<Product[]>> {
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', 'products-list');
+
   const isUndefinedFilter = filter === undefined;
   const hasFiltersParams = !isUndefinedFilter && filter?.category !== undefined;
   const from = (currentPage - 1) * totalItemsPerPage;
   const to = from + totalItemsPerPage - 1;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   let query = supabase
     .from('products')
@@ -56,11 +62,16 @@ async function getByText(
   currentPage = 1,
   totalItemsPerPage = 10
 ): Promise<ServerDto<Product[]>> {
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', `products-search`);
+
   text = text.trim().toUpperCase() || '';
 
   const from = (currentPage - 1) * totalItemsPerPage;
   const to = from + totalItemsPerPage - 1;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, count, error } = await supabase
     .from('products')
     .select('*', { count: 'exact' })
@@ -99,7 +110,12 @@ async function getByText(
 }
 
 async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
-  const supabase = await createClient();
+  'use cache';
+
+  cacheLife('minutes');
+  cacheTag('products', `products-${slug}`);
+
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -126,7 +142,12 @@ async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
 async function getAllSlugs(): Promise<
   ServerDto<Pick<Product, 'slug' | 'updatedAt'>[]>
 > {
-  const supabase = await createClient();
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', `products-slugs`);
+
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('slug, updated_at')

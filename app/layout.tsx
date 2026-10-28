@@ -13,7 +13,7 @@ import {
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, JetBrains_Mono } from 'next/font/google';
 import Link from 'next/link';
-import SearchInput from './catalogo/components/search-input';
+import SearchInput from '../components/search-input';
 import './globals.css';
 
 const jetbrainsMono = JetBrains_Mono({
