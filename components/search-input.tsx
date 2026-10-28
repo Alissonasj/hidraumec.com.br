@@ -16,7 +16,7 @@ import {
   SubmitEvent,
   Suspense,
   use,
-  useState,
+  useState
 } from 'react';
 
 type PreviewProductsResult = {
@@ -26,7 +26,7 @@ type PreviewProductsResult = {
 
 function SearchPreviewResults({
   results,
-  onProductClick,
+  onProductClick
 }: {
   results: Promise<PreviewProductsResult>;
   onProductClick: () => void;
