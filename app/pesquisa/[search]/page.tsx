@@ -6,17 +6,16 @@ import { productService } from '@/services/product-service';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
-export default async function SearchPage({
-  params,
-  searchParams
-}: {
+type SearchProps = {
   params: Promise<{ search: string }>;
   searchParams: Promise<{ page: string }>;
-}) {
+};
+
+async function SearchDataFetch({ params, searchParams }: SearchProps) {
   const pParams = await params;
   const sParams = await searchParams;
   const currentPage = Number(sParams.page) || 1;
-  const { data, pagination } = await productService.search(
+  const { data, pagination } = await productService.getByText(
     pParams.search,
     currentPage,
     10
@@ -80,5 +79,14 @@ export default async function SearchPage({
         )}
       </div>
     </main>
+  );
+}
+
+export default function SearchDataPage({ params, searchParams }: SearchProps) {
+  return (
+    <SearchDataFetch
+      params={params}
+      searchParams={searchParams}
+    />
   );
 }

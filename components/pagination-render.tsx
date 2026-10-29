@@ -72,10 +72,10 @@ export default function PaginationRender({
         <span className='font-semibold text-slate-700'>
           {pagination.totalCount === 0
             ? 0
-            : (pagination.currentPage - 1) * pagination.pageSize + 1}
+            : (pagination.currentPage - 1) * pagination.totalItemsPerPage + 1}
           {'–'}
           {Math.min(
-            pagination.currentPage * pagination.pageSize,
+            pagination.currentPage * pagination.totalItemsPerPage,
             pagination.totalCount
           )}
         </span>{' '}

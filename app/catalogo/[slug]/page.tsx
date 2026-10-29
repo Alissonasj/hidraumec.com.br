@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const { data } = await productService.search(slug, 1, 1);
+  const { data } = await productService.getByText(slug, 1, 1);
 
   if (!data)
     return {
@@ -22,7 +22,7 @@ export async function generateMetadata({
     title: `${product.name}`,
     description: `Compre ${product.name} com o melhor preço.`,
     openGraph: {
-      title: `${product.name} | Catálogo de Peças`,
+      title: `${product.name} | Hidraumec`,
       description: product.name,
       images: [{ url: product.image?.[0] ?? '', width: 1200, height: 630 }],
       type: 'website'
@@ -33,17 +33,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function productDetailsPage({
-  params
-}: {
+type ProductDetailsProps = {
   params: Promise<{ slug: string }>;
-}) {
+};
+
+async function ProductDetailsDataFetch({ params }: ProductDetailsProps) {
   const { slug } = await params;
-  const { data, pagination } = await productService.search(slug, 1, 1);
-  const product = data ?? [];
-  const totalCount = pagination?.totalCount ?? 0;
+  const { data: product } = await productService.getOneBySlug(slug);
 
-  if (totalCount === 0) notFound();
+  if (product === null) notFound();
 
-  return <ProductDetails product={product[0]} />;
+  return <ProductDetails product={product} />;
+}
+
+export default function ProductDetailsPage({ params }: ProductDetailsProps) {
+  return <ProductDetailsDataFetch params={params} />;
 }

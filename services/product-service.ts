@@ -1,18 +1,22 @@
-import { createClient } from '@/lib/client';
+import { createPublicClient } from '@/lib/public-server';
 import { FilterOptions, PaginationMeta, Product, ServerDto } from '@/lib/types';
+import { cacheLife, cacheTag } from 'next/cache';
 
-// CRIAR SERVIÇOS QUE RETORNEM APENAS UM PRODUTO EX.: FIND ONE BY. DEPOIS RENOMAR AS FUNÇÕES EXISTENTES PARA ALGO MAIS SEMÂTICO
-
-async function fetchAll(
+async function getAll(
   currentPage = 1,
-  pageSize = 10,
+  totalItemsPerPage = 10,
   filter?: FilterOptions
 ): Promise<ServerDto<Product[]>> {
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', 'products-list');
+
   const isUndefinedFilter = filter === undefined;
   const hasFiltersParams = !isUndefinedFilter && filter?.category !== undefined;
-  const from = (currentPage - 1) * pageSize;
-  const to = from + pageSize - 1;
-  const supabase = createClient();
+  const from = (currentPage - 1) * totalItemsPerPage;
+  const to = from + totalItemsPerPage - 1;
+  const supabase = createPublicClient();
 
   let query = supabase
     .from('products')
@@ -39,25 +43,35 @@ async function fetchAll(
   }
 
   const totalCount = count ?? 0;
+  const pagination = createPaginatedResponse(
+    currentPage,
+    totalItemsPerPage,
+    totalCount
+  );
 
   return {
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
+    pagination
   };
 }
 
-async function search(
+async function getByText(
   text: string,
   currentPage = 1,
-  pageSize = 10
+  totalItemsPerPage = 10
 ): Promise<ServerDto<Product[]>> {
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', `products-search`);
+
   text = text.trim().toUpperCase() || '';
 
-  const from = (currentPage - 1) * pageSize;
-  const to = from + pageSize - 1;
-  const supabase = createClient();
+  const from = (currentPage - 1) * totalItemsPerPage;
+  const to = from + totalItemsPerPage - 1;
+  const supabase = createPublicClient();
   const { data, count, error } = await supabase
     .from('products')
     .select('*', { count: 'exact' })
@@ -81,19 +95,59 @@ async function search(
   }
 
   const totalCount = count ?? 0;
+  const pagination = createPaginatedResponse(
+    currentPage,
+    totalItemsPerPage,
+    totalCount
+  );
 
   return {
     success: true,
     data,
     error: null,
-    pagination: createPaginatedResponse(currentPage, pageSize, totalCount)
+    pagination
+  };
+}
+
+async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
+  'use cache';
+
+  cacheLife('minutes');
+  cacheTag('products', `products-${slug}`);
+
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    return {
+      success: false,
+      data: null,
+      error,
+      pagination: null
+    };
+  }
+
+  return {
+    success: true,
+    data,
+    error: null,
+    pagination: null
   };
 }
 
 async function getAllSlugs(): Promise<
   ServerDto<Pick<Product, 'slug' | 'updatedAt'>[]>
 > {
-  const supabase = createClient();
+  'use cache';
+
+  cacheLife('days');
+  cacheTag('products', `products-slugs`);
+
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('slug, updated_at')
@@ -117,21 +171,22 @@ async function getAllSlugs(): Promise<
 }
 
 export const productService = {
-  fetchAll,
-  search,
+  getAll,
+  getByText,
+  getOneBySlug,
   getAllSlugs
 };
 
 export function createPaginatedResponse(
   currentPage: number,
-  pageSize: number,
+  totalItemsPerPage: number,
   totalCount: number
 ): PaginationMeta {
-  const totalPages = Math.ceil(totalCount / pageSize) || 1;
+  const totalPages = Math.ceil(totalCount / totalItemsPerPage) || 1;
 
   return {
     currentPage,
-    pageSize,
+    totalItemsPerPage,
     totalCount,
     totalPages,
     isFirstPage: currentPage === 1,

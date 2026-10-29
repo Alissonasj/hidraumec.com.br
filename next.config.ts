@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.0.181'],
+  cacheComponents: true,
+  logging: {
+    fetches: { fullUrl: true }
+  },
   images: {
     remotePatterns: [new URL('https://images.unsplash.com/**?w=500')]
   }
