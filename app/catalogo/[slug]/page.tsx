@@ -24,7 +24,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${product.name} | Hidraumec`,
       description: product.name,
-      images: [{ url: product.image?.[0] ?? '', width: 1200, height: 630 }],
+      images: [{ url: product.images?.[0] ?? '', width: 1200, height: 630 }],
       type: 'website'
     },
     alternates: {

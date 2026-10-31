@@ -25,7 +25,7 @@ const specifications = [
 ];
 
 export default function ProductDetails({ product }: { product: Product }) {
-  const safeImages = product.image ?? [];
+  const safeImages = product.images ?? [];
 
   return (
     <main className='min-h-screen bg-[#f8f9fa] text-slate-900'>
@@ -49,10 +49,10 @@ export default function ProductDetails({ product }: { product: Product }) {
             <h1 className='font-heading text-2xl font-bold leading-tight sm:text-3xl'>
               {product.name}
             </h1>
-            <p className='mt-2 text-sm text-slate-600'>{product.machine}</p>
+            <p className='mt-2 text-sm text-slate-600'>{product.machines}</p>
             <div className='mt-5 flex flex-wrap gap-2'>
               <Badge className='bg-slate-200 px-3 py-1 font-mono text-slate-700 hover:bg-slate-200'>
-                PN: {product.reference[0]}
+                PN: {product.references[0]}
               </Badge>
               <Badge className='bg-blue-100 px-3 py-1 text-blue-700 hover:bg-blue-100'>
                 <CheckCircleIcon /> Compatível
@@ -93,7 +93,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               className='mt-10'
             />
             <div className='mt-4 flex flex-wrap gap-3'>
-              {product.machine.map((item) => (
+              {product.machines?.map((item) => (
                 <span
                   key={item}
                   className='bg-slate-200 px-4 py-2 font-mono text-xs font-bold text-slate-700'

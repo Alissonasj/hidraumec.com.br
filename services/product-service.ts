@@ -81,7 +81,7 @@ async function getByText(
         `brand.ilike.%${text}%,` +
         `category.ilike.%${text}%,` +
         `slug.ilike.%${text}%,` +
-        `reference.cs.{${text}}`
+        `references.cs.{${text}}`
     )
     .range(from, to);
 

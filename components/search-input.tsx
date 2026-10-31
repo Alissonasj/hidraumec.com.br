@@ -16,7 +16,7 @@ import {
   SubmitEvent,
   Suspense,
   use,
-  useState,
+  useState
 } from 'react';
 
 type PreviewProductsResult = {
@@ -26,7 +26,7 @@ type PreviewProductsResult = {
 
 function SearchPreviewResults({
   results,
-  onProductClick,
+  onProductClick
 }: {
   results: Promise<PreviewProductsResult>;
   onProductClick: () => void;
@@ -60,7 +60,7 @@ function SearchPreviewResults({
           >
             <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
               <Image
-                src={product.image?.[0] || '#'}
+                src={product.images?.[0] || '#'}
                 alt={product.name}
                 width={500}
                 height={500}
@@ -72,7 +72,7 @@ function SearchPreviewResults({
                 {product.name}
               </span>
               <span className='mt-1 block text-[10px] uppercase tracking-[0.08em] text-slate-500'>
-                {product.brand} · Ref: {product.reference}
+                {product.brand} · Ref: {product.references}
               </span>
             </span>
           </Link>
