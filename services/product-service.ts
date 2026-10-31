@@ -112,7 +112,7 @@ async function getByText(
 async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
   'use cache';
 
-  cacheLife('minutes');
+  cacheLife('days');
   cacheTag('products', `products-${slug}`);
 
   const supabase = createPublicClient();
