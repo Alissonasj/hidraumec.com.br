@@ -81,7 +81,7 @@ async function getByText(
         `brand.ilike.%${text}%,` +
         `category.ilike.%${text}%,` +
         `slug.ilike.%${text}%,` +
-        `reference.cs.{${text}}`
+        `references.cs.{${text}}`
     )
     .range(from, to);
 
@@ -112,7 +112,7 @@ async function getByText(
 async function getOneBySlug(slug: string): Promise<ServerDto<Product>> {
   'use cache';
 
-  cacheLife('minutes');
+  cacheLife('days');
   cacheTag('products', `products-${slug}`);
 
   const supabase = createPublicClient();

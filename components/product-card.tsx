@@ -29,7 +29,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
           className='max-h-48 object-contain'
           width={500}
           height={500}
-          src={product.image?.[0] ?? '#'}
+          src={product.images?.[0] ?? '#'}
           alt={product.name}
         />
       </CardHeader>
@@ -41,11 +41,11 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
           {product.name}
         </h2>
         <p className='font-mono text-[11px] uppercase tracking-[0.08em] text-slate-500'>
-          Ref: {product.reference}
+          Ref: {product.references}
         </p>
         <div className='mt-auto flex items-start gap-2 bg-slate-800 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-white'>
           <CheckCircleIcon className='mt-0.5 size-4 shrink-0 text-emerald-400' />{' '}
-          Compatível: {product.machine}
+          Compatível: {product.machines}
         </div>
       </CardContent>
       <CardFooter

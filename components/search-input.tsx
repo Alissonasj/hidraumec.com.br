@@ -16,24 +16,29 @@ import {
   SubmitEvent,
   Suspense,
   use,
-  useState,
+  useState
 } from 'react';
 
 type PreviewProductsResult = {
   products: Product[];
-  error: boolean;
+  success: boolean;
+  error: {
+    message: string;
+    code?: string;
+    details?: unknown;
+  } | null;
 };
 
 function SearchPreviewResults({
   results,
-  onProductClick,
+  onProductClick
 }: {
   results: Promise<PreviewProductsResult>;
   onProductClick: () => void;
 }) {
-  const { products, error } = use(results);
+  const { products, success } = use(results);
 
-  if (error) {
+  if (!success) {
     return (
       <p className='px-4 py-3 text-xs text-red-700'>
         Não foi possível carregar os resultados. Tente novamente.
@@ -60,7 +65,7 @@ function SearchPreviewResults({
           >
             <span className='flex size-12 shrink-0 items-center justify-center overflow-hidden bg-slate-50'>
               <Image
-                src={product.image?.[0] || '#'}
+                src={product.images?.[0] || '#'}
                 alt={product.name}
                 width={500}
                 height={500}
@@ -72,7 +77,7 @@ function SearchPreviewResults({
                 {product.name}
               </span>
               <span className='mt-1 block text-[10px] uppercase tracking-[0.08em] text-slate-500'>
-                {product.brand} · Ref: {product.reference}
+                {product.brand} · Ref: {product.references}
               </span>
             </span>
           </Link>
@@ -83,7 +88,7 @@ function SearchPreviewResults({
 }
 
 export default function SearchInput() {
-  const [query, setQuery] = useState('');
+  const [search, setSearch] = useState('');
   const [previewResults, setPreviewResults] =
     useState<Promise<PreviewProductsResult> | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -92,8 +97,8 @@ export default function SearchInput() {
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (query.trim().length > 0) {
-      route.push(`${LinksPath.PESQUISA}/${query}`);
+    if (search.trim().length > 0) {
+      route.push(`${LinksPath.PESQUISA}/${search}`);
     }
 
     inputClear();
@@ -102,23 +107,26 @@ export default function SearchInput() {
   function handleOnChangeInputSearch(
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
   ) {
-    const query = event.target.value;
-    setQuery(query);
+    const searchValue = event.target.value;
+    setSearch(searchValue);
 
-    if (!query.trim()) {
+    if (!searchValue.trim()) {
       setPreviewResults(null);
       return;
     }
 
-    const results = getProductsByTextAction(query, 1, 3).then(
-      ({ data }) => ({ products: data ?? [], error: false }),
-      () => ({ products: [], error: true })
+    const results = getProductsByTextAction(searchValue, 1, 3).then(
+      ({ data, success, error }) => ({
+        products: data ?? [],
+        success,
+        error
+      })
     );
     setPreviewResults(results);
   }
 
   function inputClear() {
-    setQuery('');
+    setSearch('');
     setPreviewResults(null);
   }
 
@@ -145,7 +153,7 @@ export default function SearchInput() {
       <div className='flex bg-slate-100'>
         <MagnifyingGlassIcon className='ml-4 mt-3.5 size-4 shrink-0 text-slate-500' />
         <Input
-          value={query}
+          value={search}
           onChange={handleOnChangeInputSearch}
           type='search'
           placeholder='Buscar peças...'
@@ -159,7 +167,7 @@ export default function SearchInput() {
           Pesquisar
         </Button>
       </div>
-      {query.trim() && isFocused && (
+      {search.trim() && isFocused && (
         <div className='absolute left-0 right-0 top-full z-20 border border-t-0 border-slate-200 bg-white shadow-lg'>
           {previewResults && (
             <Suspense
