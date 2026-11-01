@@ -42,6 +42,8 @@ export function useUrlParams() {
   return {
     setUrlSearchParams,
     clearAllUrlSearchParams,
-    clearOneUrlSeachParams
+    clearOneUrlSeachParams,
+    searchParams,
+    pathname
   };
 }
