@@ -7,6 +7,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { LinksPath } from '@/lib/links-path';
 import { Product } from '@/lib/types';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import debounce from 'debounce';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -115,14 +116,20 @@ export default function SearchInput() {
       return;
     }
 
-    const results = getProductsByTextAction(searchValue, 1, 3).then(
-      ({ data, success, error }) => ({
-        products: data ?? [],
-        success,
-        error
-      })
-    );
-    setPreviewResults(results);
+    const debouncedSearch = debounce(fetchPreviewResults, 500);
+
+    debouncedSearch(searchValue);
+
+    function fetchPreviewResults(searchValue: string) {
+      const results = getProductsByTextAction(searchValue, 1, 3).then(
+        ({ data, success, error }) => ({
+          products: data ?? [],
+          success,
+          error
+        })
+      );
+      setPreviewResults(results);
+    }
   }
 
   function inputClear() {
