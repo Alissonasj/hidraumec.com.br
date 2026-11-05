@@ -10,22 +10,22 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { MouseEvent } from 'react';
+import { MouseEvent, RefObject } from 'react';
 import { PaginationMeta, VisiblePage } from '../lib/types';
 
 export default function PaginationRender({
-  pagination
+  pagination,
+  ref
 }: {
   pagination: PaginationMeta;
+  ref?: RefObject<HTMLElement>;
 }) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { setUrlSearchParams } = useUrlParams();
+  const { setUrlSearchParams, searchParams, pathname } = useUrlParams();
 
   function handlePageChange(
     event: MouseEvent<HTMLAnchorElement>,
-    page: number
+    page: number,
+    ref?: RefObject<HTMLElement>
   ) {
     event.preventDefault();
 
@@ -35,6 +35,11 @@ export default function PaginationRender({
       page !== pagination.currentPage
     ) {
       setUrlSearchParams('page', String(page));
+      if (ref) {
+        ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }
 
@@ -103,7 +108,7 @@ export default function PaginationRender({
                   : 'pointer-events-none rounded-md opacity-40'
               }
               onClick={(event) =>
-                handlePageChange(event, pagination.currentPage - 1)
+                handlePageChange(event, pagination.currentPage - 1, ref)
               }
             />
           </PaginationItem>
@@ -124,7 +129,7 @@ export default function PaginationRender({
                         ? 'rounded-md border-red-700 bg-red-700 font-semibold text-white shadow-sm hover:bg-red-800 hover:text-white'
                         : 'rounded-md text-slate-600 hover:bg-red-50 hover:text-red-700'
                     }
-                    onClick={(event) => handlePageChange(event, page)}
+                    onClick={(event) => handlePageChange(event, page, ref)}
                   >
                     {page}
                   </PaginationLink>
@@ -145,7 +150,7 @@ export default function PaginationRender({
                   : 'pointer-events-none rounded-md opacity-40'
               }
               onClick={(event) =>
-                handlePageChange(event, pagination.currentPage + 1)
+                handlePageChange(event, pagination.currentPage + 1, ref)
               }
             />
           </PaginationItem>

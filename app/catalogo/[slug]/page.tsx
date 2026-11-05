@@ -9,14 +9,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const { data } = await productService.getByText(slug, 1, 1);
+  const { data: product } = await productService.getOneBySlug(slug);
 
-  if (!data)
+  if (!product)
     return {
       title: 'Peça não encontrada'
     };
-
-  const product = data[0];
 
   return {
     title: `${product.name}`,

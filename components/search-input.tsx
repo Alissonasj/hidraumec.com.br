@@ -16,6 +16,7 @@ import {
   SubmitEvent,
   Suspense,
   use,
+  useEffect,
   useState
 } from 'react';
 
@@ -88,17 +89,39 @@ function SearchPreviewResults({
 }
 
 export default function SearchInput() {
-  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [previewResults, setPreviewResults] =
     useState<Promise<PreviewProductsResult> | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const route = useRouter();
 
+  useEffect(() => {
+    if (!searchValue.trim()) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      const results = getProductsByTextAction(searchValue, 1, 3).then(
+        ({ data, success, error }) => ({
+          products: data ?? [],
+          success,
+          error
+        })
+      );
+
+      setPreviewResults(results);
+    }, 500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [searchValue]);
+
   function submitSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (search.trim().length > 0) {
-      route.push(`${LinksPath.PESQUISA}/${search}`);
+    if (searchValue.trim().length > 0) {
+      route.push(`${LinksPath.PESQUISA}/${searchValue}`);
     }
 
     inputClear();
@@ -107,26 +130,13 @@ export default function SearchInput() {
   function handleOnChangeInputSearch(
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
   ) {
-    const searchValue = event.target.value;
-    setSearch(searchValue);
-
-    if (!searchValue.trim()) {
-      setPreviewResults(null);
-      return;
-    }
-
-    const results = getProductsByTextAction(searchValue, 1, 3).then(
-      ({ data, success, error }) => ({
-        products: data ?? [],
-        success,
-        error
-      })
-    );
-    setPreviewResults(results);
+    const inputSearchValue = event.target.value;
+    setPreviewResults(null);
+    setSearchValue(inputSearchValue);
   }
 
   function inputClear() {
-    setSearch('');
+    setSearchValue('');
     setPreviewResults(null);
   }
 
@@ -153,7 +163,7 @@ export default function SearchInput() {
       <div className='flex bg-slate-100'>
         <MagnifyingGlassIcon className='ml-4 mt-3.5 size-4 shrink-0 text-slate-500' />
         <Input
-          value={search}
+          value={searchValue}
           onChange={handleOnChangeInputSearch}
           type='search'
           placeholder='Buscar peças...'
@@ -167,7 +177,7 @@ export default function SearchInput() {
           Pesquisar
         </Button>
       </div>
-      {search.trim() && isFocused && (
+      {searchValue.trim() && isFocused && (
         <div className='absolute left-0 right-0 top-full z-20 border border-t-0 border-slate-200 bg-white shadow-lg'>
           {previewResults && (
             <Suspense
